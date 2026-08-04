@@ -1,0 +1,1291 @@
+
+Atmega8A.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000004ee  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         0000001a  00800060  000004ee  00000582  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0000000d  0080007a  0080007a  0000059c  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  0000059c  2**0
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000060  00000000  00000000  000005cc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000d8d  00000000  00000000  0000062c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000386  00000000  00000000  000013b9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000033b  00000000  00000000  0000173f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  0000013c  00000000  00000000  00001a7c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000403  00000000  00000000  00001bb8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    000008d8  00000000  00000000  00001fbb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000070  00000000  00000000  00002893  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	2c c0       	rjmp	.+88     	; 0x5c <__bad_interrupt>
+   4:	2b c0       	rjmp	.+86     	; 0x5c <__bad_interrupt>
+   6:	2a c0       	rjmp	.+84     	; 0x5c <__bad_interrupt>
+   8:	29 c0       	rjmp	.+82     	; 0x5c <__bad_interrupt>
+   a:	28 c0       	rjmp	.+80     	; 0x5c <__bad_interrupt>
+   c:	27 c0       	rjmp	.+78     	; 0x5c <__bad_interrupt>
+   e:	26 c0       	rjmp	.+76     	; 0x5c <__bad_interrupt>
+  10:	25 c0       	rjmp	.+74     	; 0x5c <__bad_interrupt>
+  12:	24 c0       	rjmp	.+72     	; 0x5c <__bad_interrupt>
+  14:	fe c0       	rjmp	.+508    	; 0x212 <__vector_10>
+  16:	22 c0       	rjmp	.+68     	; 0x5c <__bad_interrupt>
+  18:	21 c0       	rjmp	.+66     	; 0x5c <__bad_interrupt>
+  1a:	20 c0       	rjmp	.+64     	; 0x5c <__bad_interrupt>
+  1c:	1f c0       	rjmp	.+62     	; 0x5c <__bad_interrupt>
+  1e:	1e c0       	rjmp	.+60     	; 0x5c <__bad_interrupt>
+  20:	1d c0       	rjmp	.+58     	; 0x5c <__bad_interrupt>
+  22:	1c c0       	rjmp	.+56     	; 0x5c <__bad_interrupt>
+  24:	1b c0       	rjmp	.+54     	; 0x5c <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	ee ee       	ldi	r30, 0xEE	; 238
+  3a:	f4 e0       	ldi	r31, 0x04	; 4
+  3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+  42:	aa 37       	cpi	r26, 0x7A	; 122
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e <__SP_H__>
+
+00000048 <__do_clear_bss>:
+  48:	20 e0       	ldi	r18, 0x00	; 0
+  4a:	aa e7       	ldi	r26, 0x7A	; 122
+  4c:	b0 e0       	ldi	r27, 0x00	; 0
+  4e:	01 c0       	rjmp	.+2      	; 0x52 <.do_clear_bss_start>
+
+00000050 <.do_clear_bss_loop>:
+  50:	1d 92       	st	X+, r1
+
+00000052 <.do_clear_bss_start>:
+  52:	a7 38       	cpi	r26, 0x87	; 135
+  54:	b2 07       	cpc	r27, r18
+  56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
+  58:	36 d1       	rcall	.+620    	; 0x2c6 <main>
+  5a:	47 c2       	rjmp	.+1166   	; 0x4ea <_exit>
+
+0000005c <__bad_interrupt>:
+  5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
+
+0000005e <PrepareTransmitFrame>:
+{
+    return header ^ highByte ^ lowByte;
+}
+
+static void PrepareTransmitFrame(uint16_t number)
+{
+  5e:	cf 93       	push	r28
+  60:	df 93       	push	r29
+    transmitFrame[0] = FRAME_HEADER;
+  62:	eb e7       	ldi	r30, 0x7B	; 123
+  64:	f0 e0       	ldi	r31, 0x00	; 0
+  66:	25 ea       	ldi	r18, 0xA5	; 165
+  68:	20 83       	st	Z, r18
+    transmitFrame[1] = (uint8_t)(number >> 8);
+  6a:	ac e7       	ldi	r26, 0x7C	; 124
+  6c:	b0 e0       	ldi	r27, 0x00	; 0
+  6e:	9c 93       	st	X, r25
+    transmitFrame[2] = (uint8_t)(number & 0xFF);
+  70:	cd e7       	ldi	r28, 0x7D	; 125
+  72:	d0 e0       	ldi	r29, 0x00	; 0
+  74:	88 83       	st	Y, r24
+
+    transmitFrame[3] = CalculateChecksum(
+  76:	88 81       	ld	r24, Y
+  78:	2c 91       	ld	r18, X
+  7a:	90 81       	ld	r25, Z
+    uint8_t header,
+    uint8_t highByte,
+    uint8_t lowByte
+)
+{
+    return header ^ highByte ^ lowByte;
+  7c:	82 27       	eor	r24, r18
+  7e:	89 27       	eor	r24, r25
+{
+    transmitFrame[0] = FRAME_HEADER;
+    transmitFrame[1] = (uint8_t)(number >> 8);
+    transmitFrame[2] = (uint8_t)(number & 0xFF);
+
+    transmitFrame[3] = CalculateChecksum(
+  80:	80 93 7e 00 	sts	0x007E, r24
+        transmitFrame[0],
+        transmitFrame[1],
+        transmitFrame[2]
+    );
+}
+  84:	df 91       	pop	r29
+  86:	cf 91       	pop	r28
+  88:	08 95       	ret
+
+0000008a <LCD_SendNibble>:
+    _delay_us(100);
+}
+
+static void LCD_SendNibble(uint8_t nibble)
+{
+    LCD_PORT &= ~(
+  8a:	95 b3       	in	r25, 0x15	; 21
+  8c:	93 7c       	andi	r25, 0xC3	; 195
+  8e:	95 bb       	out	0x15, r25	; 21
+        (1 << LCD_D5) |
+        (1 << LCD_D6) |
+        (1 << LCD_D7)
+    );
+
+    if (nibble & 0x01)
+  90:	80 fd       	sbrc	r24, 0
+        LCD_PORT |= (1 << LCD_D4);
+  92:	aa 9a       	sbi	0x15, 2	; 21
+
+    if (nibble & 0x02)
+  94:	81 fd       	sbrc	r24, 1
+        LCD_PORT |= (1 << LCD_D5);
+  96:	ab 9a       	sbi	0x15, 3	; 21
+
+    if (nibble & 0x04)
+  98:	82 fd       	sbrc	r24, 2
+        LCD_PORT |= (1 << LCD_D6);
+  9a:	ac 9a       	sbi	0x15, 4	; 21
+
+    if (nibble & 0x08)
+  9c:	83 fd       	sbrc	r24, 3
+        LCD_PORT |= (1 << LCD_D7);
+  9e:	ad 9a       	sbi	0x15, 5	; 21
+   LCD FUNCTIONS
+   ========================================================= */
+
+static void LCD_EnablePulse(void)
+{
+    LCD_PORT |= (1 << LCD_EN);
+  a0:	a9 9a       	sbi	0x15, 1	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  a2:	82 e0       	ldi	r24, 0x02	; 2
+  a4:	8a 95       	dec	r24
+  a6:	f1 f7       	brne	.-4      	; 0xa4 <LCD_SendNibble+0x1a>
+  a8:	00 c0       	rjmp	.+0      	; 0xaa <LCD_SendNibble+0x20>
+    _delay_us(1);
+
+    LCD_PORT &= ~(1 << LCD_EN);
+  aa:	a9 98       	cbi	0x15, 1	; 21
+  ac:	87 ec       	ldi	r24, 0xC7	; 199
+  ae:	90 e0       	ldi	r25, 0x00	; 0
+  b0:	01 97       	sbiw	r24, 0x01	; 1
+  b2:	f1 f7       	brne	.-4      	; 0xb0 <LCD_SendNibble+0x26>
+  b4:	00 c0       	rjmp	.+0      	; 0xb6 <LCD_SendNibble+0x2c>
+  b6:	00 00       	nop
+  b8:	08 95       	ret
+
+000000ba <LCD_SendByte>:
+
+    LCD_EnablePulse();
+}
+
+static void LCD_SendByte(uint8_t value, uint8_t dataMode)
+{
+  ba:	cf 93       	push	r28
+  bc:	c8 2f       	mov	r28, r24
+    if (dataMode)
+  be:	66 23       	and	r22, r22
+  c0:	11 f0       	breq	.+4      	; 0xc6 <LCD_SendByte+0xc>
+        LCD_PORT |= (1 << LCD_RS);
+  c2:	a8 9a       	sbi	0x15, 0	; 21
+  c4:	01 c0       	rjmp	.+2      	; 0xc8 <LCD_SendByte+0xe>
+    else
+        LCD_PORT &= ~(1 << LCD_RS);
+  c6:	a8 98       	cbi	0x15, 0	; 21
+
+    LCD_SendNibble(value >> 4);
+  c8:	8c 2f       	mov	r24, r28
+  ca:	82 95       	swap	r24
+  cc:	8f 70       	andi	r24, 0x0F	; 15
+  ce:	dd df       	rcall	.-70     	; 0x8a <LCD_SendNibble>
+    LCD_SendNibble(value & 0x0F);
+  d0:	8c 2f       	mov	r24, r28
+  d2:	8f 70       	andi	r24, 0x0F	; 15
+  d4:	da df       	rcall	.-76     	; 0x8a <LCD_SendNibble>
+  d6:	85 e8       	ldi	r24, 0x85	; 133
+  d8:	8a 95       	dec	r24
+  da:	f1 f7       	brne	.-4      	; 0xd8 <LCD_SendByte+0x1e>
+  dc:	00 00       	nop
+
+    _delay_us(50);
+}
+  de:	cf 91       	pop	r28
+  e0:	08 95       	ret
+
+000000e2 <LCD_Print>:
+
+    LCD_Command(0x80 | address);
+}
+
+static void LCD_Print(const char *text)
+{
+  e2:	cf 93       	push	r28
+  e4:	df 93       	push	r29
+  e6:	ec 01       	movw	r28, r24
+    while (*text)
+  e8:	88 81       	ld	r24, Y
+  ea:	88 23       	and	r24, r24
+  ec:	31 f0       	breq	.+12     	; 0xfa <LCD_Print+0x18>
+  ee:	21 96       	adiw	r28, 0x01	; 1
+        _delay_ms(2);
+}
+
+static void LCD_Character(char character)
+{
+    LCD_SendByte((uint8_t)character, 1);
+  f0:	61 e0       	ldi	r22, 0x01	; 1
+  f2:	e3 df       	rcall	.-58     	; 0xba <LCD_SendByte>
+    LCD_Command(0x80 | address);
+}
+
+static void LCD_Print(const char *text)
+{
+    while (*text)
+  f4:	89 91       	ld	r24, Y+
+  f6:	81 11       	cpse	r24, r1
+  f8:	fb cf       	rjmp	.-10     	; 0xf0 <LCD_Print+0xe>
+    {
+        LCD_Character(*text);
+        text++;
+    }
+}
+  fa:	df 91       	pop	r29
+  fc:	cf 91       	pop	r28
+  fe:	08 95       	ret
+
+00000100 <LCD_Command>:
+
+    _delay_us(50);
+}
+
+static void LCD_Command(uint8_t command)
+{
+ 100:	cf 93       	push	r28
+ 102:	c8 2f       	mov	r28, r24
+    LCD_SendByte(command, 0);
+ 104:	60 e0       	ldi	r22, 0x00	; 0
+ 106:	d9 df       	rcall	.-78     	; 0xba <LCD_SendByte>
+
+    if ((command == 0x01) || (command == 0x02))
+ 108:	c1 50       	subi	r28, 0x01	; 1
+ 10a:	c2 30       	cpi	r28, 0x02	; 2
+ 10c:	30 f4       	brcc	.+12     	; 0x11a <LCD_Command+0x1a>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 10e:	8f e9       	ldi	r24, 0x9F	; 159
+ 110:	9f e0       	ldi	r25, 0x0F	; 15
+ 112:	01 97       	sbiw	r24, 0x01	; 1
+ 114:	f1 f7       	brne	.-4      	; 0x112 <LCD_Command+0x12>
+ 116:	00 c0       	rjmp	.+0      	; 0x118 <LCD_Command+0x18>
+ 118:	00 00       	nop
+        _delay_ms(2);
+}
+ 11a:	cf 91       	pop	r28
+ 11c:	08 95       	ret
+
+0000011e <Keypad_ScanRaw>:
+    KEYPAD_DDR = 0x0F;
+    KEYPAD_PORT = 0xFF;
+}
+
+static char Keypad_ScanRaw(void)
+{
+ 11e:	cf 93       	push	r28
+ 120:	df 93       	push	r29
+ 122:	60 e0       	ldi	r22, 0x00	; 0
+ 124:	70 e0       	ldi	r23, 0x00	; 0
+    uint8_t column;
+
+    for (row = 0; row < 4; row++)
+    {
+        KEYPAD_PORT |= 0x0F;
+        KEYPAD_PORT &= ~(1 << row);
+ 126:	a1 e0       	ldi	r26, 0x01	; 1
+ 128:	b0 e0       	ldi	r27, 0x00	; 0
+    uint8_t row;
+    uint8_t column;
+
+    for (row = 0; row < 4; row++)
+    {
+        KEYPAD_PORT |= 0x0F;
+ 12a:	82 b3       	in	r24, 0x12	; 18
+ 12c:	8f 60       	ori	r24, 0x0F	; 15
+ 12e:	82 bb       	out	0x12, r24	; 18
+        KEYPAD_PORT &= ~(1 << row);
+ 130:	22 b3       	in	r18, 0x12	; 18
+ 132:	eb 01       	movw	r28, r22
+ 134:	cd 01       	movw	r24, r26
+ 136:	06 2e       	mov	r0, r22
+ 138:	02 c0       	rjmp	.+4      	; 0x13e <Keypad_ScanRaw+0x20>
+ 13a:	88 0f       	add	r24, r24
+ 13c:	99 1f       	adc	r25, r25
+ 13e:	0a 94       	dec	r0
+ 140:	e2 f7       	brpl	.-8      	; 0x13a <Keypad_ScanRaw+0x1c>
+ 142:	80 95       	com	r24
+ 144:	82 23       	and	r24, r18
+ 146:	82 bb       	out	0x12, r24	; 18
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 148:	8d e0       	ldi	r24, 0x0D	; 13
+ 14a:	8a 95       	dec	r24
+ 14c:	f1 f7       	brne	.-4      	; 0x14a <Keypad_ScanRaw+0x2c>
+ 14e:	00 00       	nop
+
+        _delay_us(5);
+
+        for (column = 0; column < 4; column++)
+        {
+            if (!(KEYPAD_PIN & (1 << (column + 4))))
+ 150:	84 9b       	sbis	0x10, 4	; 16
+ 152:	0f c0       	rjmp	.+30     	; 0x172 <Keypad_ScanRaw+0x54>
+ 154:	cd 01       	movw	r24, r26
+ 156:	20 b3       	in	r18, 0x10	; 16
+ 158:	fc 01       	movw	r30, r24
+ 15a:	30 e0       	ldi	r19, 0x00	; 0
+ 15c:	ac 01       	movw	r20, r24
+ 15e:	4c 5f       	subi	r20, 0xFC	; 252
+ 160:	5f 4f       	sbci	r21, 0xFF	; 255
+ 162:	02 c0       	rjmp	.+4      	; 0x168 <Keypad_ScanRaw+0x4a>
+ 164:	35 95       	asr	r19
+ 166:	27 95       	ror	r18
+ 168:	4a 95       	dec	r20
+ 16a:	e2 f7       	brpl	.-8      	; 0x164 <Keypad_ScanRaw+0x46>
+ 16c:	20 fd       	sbrc	r18, 0
+ 16e:	0d c0       	rjmp	.+26     	; 0x18a <Keypad_ScanRaw+0x6c>
+ 170:	02 c0       	rjmp	.+4      	; 0x176 <Keypad_ScanRaw+0x58>
+ 172:	e0 e0       	ldi	r30, 0x00	; 0
+ 174:	f0 e0       	ldi	r31, 0x00	; 0
+            {
+                return keypadMap[row][column];
+ 176:	cc 0f       	add	r28, r28
+ 178:	dd 1f       	adc	r29, r29
+ 17a:	cc 0f       	add	r28, r28
+ 17c:	dd 1f       	adc	r29, r29
+ 17e:	ec 0f       	add	r30, r28
+ 180:	fd 1f       	adc	r31, r29
+ 182:	e6 59       	subi	r30, 0x96	; 150
+ 184:	ff 4f       	sbci	r31, 0xFF	; 255
+ 186:	80 81       	ld	r24, Z
+ 188:	0a c0       	rjmp	.+20     	; 0x19e <Keypad_ScanRaw+0x80>
+ 18a:	01 96       	adiw	r24, 0x01	; 1
+        KEYPAD_PORT |= 0x0F;
+        KEYPAD_PORT &= ~(1 << row);
+
+        _delay_us(5);
+
+        for (column = 0; column < 4; column++)
+ 18c:	84 30       	cpi	r24, 0x04	; 4
+ 18e:	91 05       	cpc	r25, r1
+ 190:	11 f7       	brne	.-60     	; 0x156 <Keypad_ScanRaw+0x38>
+ 192:	6f 5f       	subi	r22, 0xFF	; 255
+ 194:	7f 4f       	sbci	r23, 0xFF	; 255
+static char Keypad_ScanRaw(void)
+{
+    uint8_t row;
+    uint8_t column;
+
+    for (row = 0; row < 4; row++)
+ 196:	64 30       	cpi	r22, 0x04	; 4
+ 198:	71 05       	cpc	r23, r1
+ 19a:	39 f6       	brne	.-114    	; 0x12a <Keypad_ScanRaw+0xc>
+                return keypadMap[row][column];
+            }
+        }
+    }
+
+    return 0;
+ 19c:	80 e0       	ldi	r24, 0x00	; 0
+}
+ 19e:	df 91       	pop	r29
+ 1a0:	cf 91       	pop	r28
+ 1a2:	08 95       	ret
+
+000001a4 <LCD_PrintNumber>:
+        text++;
+    }
+}
+
+static void LCD_PrintNumber(uint16_t number)
+{
+ 1a4:	0f 93       	push	r16
+ 1a6:	1f 93       	push	r17
+ 1a8:	cf 93       	push	r28
+ 1aa:	df 93       	push	r29
+ 1ac:	00 d0       	rcall	.+0      	; 0x1ae <LCD_PrintNumber+0xa>
+ 1ae:	00 d0       	rcall	.+0      	; 0x1b0 <LCD_PrintNumber+0xc>
+ 1b0:	00 d0       	rcall	.+0      	; 0x1b2 <LCD_PrintNumber+0xe>
+ 1b2:	cd b7       	in	r28, 0x3d	; 61
+ 1b4:	de b7       	in	r29, 0x3e	; 62
+ 1b6:	8c 01       	movw	r16, r24
+    } else if (__radix < 2 || __radix > 36) {
+	*__s = 0;
+	return __s;
+    } else {
+	extern char *__itoa_ncheck (int, char *, unsigned char);
+	return __itoa_ncheck (__val, __s, __radix);
+ 1b8:	4a e0       	ldi	r20, 0x0A	; 10
+ 1ba:	be 01       	movw	r22, r28
+ 1bc:	6f 5f       	subi	r22, 0xFF	; 255
+ 1be:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1c0:	61 d1       	rcall	.+706    	; 0x484 <__itoa_ncheck>
+    char buffer[6];
+
+    itoa(number, buffer, 10);
+    LCD_Print(buffer);
+ 1c2:	ce 01       	movw	r24, r28
+ 1c4:	01 96       	adiw	r24, 0x01	; 1
+ 1c6:	8d df       	rcall	.-230    	; 0xe2 <LCD_Print>
+
+    if (number < 10000)
+ 1c8:	00 31       	cpi	r16, 0x10	; 16
+ 1ca:	87 e2       	ldi	r24, 0x27	; 39
+ 1cc:	18 07       	cpc	r17, r24
+ 1ce:	18 f4       	brcc	.+6      	; 0x1d6 <LCD_PrintNumber+0x32>
+        _delay_ms(2);
+}
+
+static void LCD_Character(char character)
+{
+    LCD_SendByte((uint8_t)character, 1);
+ 1d0:	61 e0       	ldi	r22, 0x01	; 1
+ 1d2:	80 e2       	ldi	r24, 0x20	; 32
+ 1d4:	72 df       	rcall	.-284    	; 0xba <LCD_SendByte>
+    LCD_Print(buffer);
+
+    if (number < 10000)
+        LCD_Character(' ');
+
+    if (number < 1000)
+ 1d6:	08 3e       	cpi	r16, 0xE8	; 232
+ 1d8:	83 e0       	ldi	r24, 0x03	; 3
+ 1da:	18 07       	cpc	r17, r24
+ 1dc:	18 f4       	brcc	.+6      	; 0x1e4 <LCD_PrintNumber+0x40>
+        _delay_ms(2);
+}
+
+static void LCD_Character(char character)
+{
+    LCD_SendByte((uint8_t)character, 1);
+ 1de:	61 e0       	ldi	r22, 0x01	; 1
+ 1e0:	80 e2       	ldi	r24, 0x20	; 32
+ 1e2:	6b df       	rcall	.-298    	; 0xba <LCD_SendByte>
+        LCD_Character(' ');
+
+    if (number < 1000)
+        LCD_Character(' ');
+
+    if (number < 100)
+ 1e4:	04 36       	cpi	r16, 0x64	; 100
+ 1e6:	11 05       	cpc	r17, r1
+ 1e8:	18 f4       	brcc	.+6      	; 0x1f0 <LCD_PrintNumber+0x4c>
+        _delay_ms(2);
+}
+
+static void LCD_Character(char character)
+{
+    LCD_SendByte((uint8_t)character, 1);
+ 1ea:	61 e0       	ldi	r22, 0x01	; 1
+ 1ec:	80 e2       	ldi	r24, 0x20	; 32
+ 1ee:	65 df       	rcall	.-310    	; 0xba <LCD_SendByte>
+        LCD_Character(' ');
+
+    if (number < 100)
+        LCD_Character(' ');
+
+    if (number < 10)
+ 1f0:	0a 30       	cpi	r16, 0x0A	; 10
+ 1f2:	11 05       	cpc	r17, r1
+ 1f4:	18 f4       	brcc	.+6      	; 0x1fc <LCD_PrintNumber+0x58>
+        _delay_ms(2);
+}
+
+static void LCD_Character(char character)
+{
+    LCD_SendByte((uint8_t)character, 1);
+ 1f6:	61 e0       	ldi	r22, 0x01	; 1
+ 1f8:	80 e2       	ldi	r24, 0x20	; 32
+ 1fa:	5f df       	rcall	.-322    	; 0xba <LCD_SendByte>
+    if (number < 100)
+        LCD_Character(' ');
+
+    if (number < 10)
+        LCD_Character(' ');
+}
+ 1fc:	26 96       	adiw	r28, 0x06	; 6
+ 1fe:	0f b6       	in	r0, 0x3f	; 63
+ 200:	f8 94       	cli
+ 202:	de bf       	out	0x3e, r29	; 62
+ 204:	0f be       	out	0x3f, r0	; 63
+ 206:	cd bf       	out	0x3d, r28	; 61
+ 208:	df 91       	pop	r29
+ 20a:	cf 91       	pop	r28
+ 20c:	1f 91       	pop	r17
+ 20e:	0f 91       	pop	r16
+ 210:	08 95       	ret
+
+00000212 <__vector_10>:
+
+    sei();
+}
+
+ISR(SPI_STC_vect)
+{
+ 212:	1f 92       	push	r1
+ 214:	0f 92       	push	r0
+ 216:	0f b6       	in	r0, 0x3f	; 63
+ 218:	0f 92       	push	r0
+ 21a:	11 24       	eor	r1, r1
+ 21c:	2f 93       	push	r18
+ 21e:	3f 93       	push	r19
+ 220:	4f 93       	push	r20
+ 222:	5f 93       	push	r21
+ 224:	6f 93       	push	r22
+ 226:	7f 93       	push	r23
+ 228:	8f 93       	push	r24
+ 22a:	9f 93       	push	r25
+ 22c:	af 93       	push	r26
+ 22e:	bf 93       	push	r27
+ 230:	ef 93       	push	r30
+ 232:	ff 93       	push	r31
+    uint8_t receivedByte;
+    uint16_t localCopy;
+
+    receivedByte = SPDR;
+ 234:	8f b1       	in	r24, 0x0f	; 15
+
+    receiveFrame[spiIndex] = receivedByte;
+ 236:	e0 91 7a 00 	lds	r30, 0x007A
+ 23a:	f0 e0       	ldi	r31, 0x00	; 0
+ 23c:	e1 58       	subi	r30, 0x81	; 129
+ 23e:	ff 4f       	sbci	r31, 0xFF	; 255
+ 240:	80 83       	st	Z, r24
+
+    spiIndex++;
+ 242:	80 91 7a 00 	lds	r24, 0x007A
+ 246:	8f 5f       	subi	r24, 0xFF	; 255
+ 248:	80 93 7a 00 	sts	0x007A, r24
+
+    if (spiIndex >= 4)
+ 24c:	80 91 7a 00 	lds	r24, 0x007A
+ 250:	84 30       	cpi	r24, 0x04	; 4
+ 252:	08 f1       	brcs	.+66     	; 0x296 <__vector_10+0x84>
+    {
+        spiIndex = 0;
+ 254:	10 92 7a 00 	sts	0x007A, r1
+
+        /*
+         * Validate frame received from ATmega16A.
+         */
+        if (
+            receiveFrame[0] == FRAME_HEADER &&
+ 258:	80 91 7f 00 	lds	r24, 0x007F
+        spiIndex = 0;
+
+        /*
+         * Validate frame received from ATmega16A.
+         */
+        if (
+ 25c:	85 3a       	cpi	r24, 0xA5	; 165
+ 25e:	b1 f4       	brne	.+44     	; 0x28c <__vector_10+0x7a>
+            receiveFrame[0] == FRAME_HEADER &&
+            receiveFrame[3] ==
+ 260:	90 91 82 00 	lds	r25, 0x0082
+            CalculateChecksum(
+ 264:	80 91 81 00 	lds	r24, 0x0081
+ 268:	30 91 80 00 	lds	r19, 0x0080
+ 26c:	20 91 7f 00 	lds	r18, 0x007F
+    uint8_t header,
+    uint8_t highByte,
+    uint8_t lowByte
+)
+{
+    return header ^ highByte ^ lowByte;
+ 270:	83 27       	eor	r24, r19
+ 272:	82 27       	eor	r24, r18
+
+        /*
+         * Validate frame received from ATmega16A.
+         */
+        if (
+            receiveFrame[0] == FRAME_HEADER &&
+ 274:	98 13       	cpse	r25, r24
+ 276:	0a c0       	rjmp	.+20     	; 0x28c <__vector_10+0x7a>
+                receiveFrame[2]
+            )
+        )
+        {
+            remoteNumber =
+                ((uint16_t)receiveFrame[1] << 8) |
+ 278:	20 91 80 00 	lds	r18, 0x0080
+                receiveFrame[2];
+ 27c:	80 91 81 00 	lds	r24, 0x0081
+                receiveFrame[2]
+            )
+        )
+        {
+            remoteNumber =
+                ((uint16_t)receiveFrame[1] << 8) |
+ 280:	90 e0       	ldi	r25, 0x00	; 0
+ 282:	92 2b       	or	r25, r18
+                receiveFrame[1],
+                receiveFrame[2]
+            )
+        )
+        {
+            remoteNumber =
+ 284:	90 93 84 00 	sts	0x0084, r25
+ 288:	80 93 83 00 	sts	0x0083, r24
+        }
+
+        /*
+         * Prepare the slave number for the next frame.
+         */
+        localCopy = sendNumber;
+ 28c:	80 91 85 00 	lds	r24, 0x0085
+ 290:	90 91 86 00 	lds	r25, 0x0086
+        PrepareTransmitFrame(localCopy);
+ 294:	e4 de       	rcall	.-568    	; 0x5e <PrepareTransmitFrame>
+    }
+
+    /*
+     * Load the next response byte.
+     */
+    SPDR = transmitFrame[spiIndex];
+ 296:	e0 91 7a 00 	lds	r30, 0x007A
+ 29a:	f0 e0       	ldi	r31, 0x00	; 0
+ 29c:	e5 58       	subi	r30, 0x85	; 133
+ 29e:	ff 4f       	sbci	r31, 0xFF	; 255
+ 2a0:	80 81       	ld	r24, Z
+ 2a2:	8f b9       	out	0x0f, r24	; 15
+}
+ 2a4:	ff 91       	pop	r31
+ 2a6:	ef 91       	pop	r30
+ 2a8:	bf 91       	pop	r27
+ 2aa:	af 91       	pop	r26
+ 2ac:	9f 91       	pop	r25
+ 2ae:	8f 91       	pop	r24
+ 2b0:	7f 91       	pop	r23
+ 2b2:	6f 91       	pop	r22
+ 2b4:	5f 91       	pop	r21
+ 2b6:	4f 91       	pop	r20
+ 2b8:	3f 91       	pop	r19
+ 2ba:	2f 91       	pop	r18
+ 2bc:	0f 90       	pop	r0
+ 2be:	0f be       	out	0x3f, r0	; 63
+ 2c0:	0f 90       	pop	r0
+ 2c2:	1f 90       	pop	r1
+ 2c4:	18 95       	reti
+
+000002c6 <main>:
+    LCD_SendByte((uint8_t)character, 1);
+}
+
+static void LCD_Init(void)
+{
+    LCD_DDR |=
+ 2c6:	84 b3       	in	r24, 0x14	; 20
+ 2c8:	8f 63       	ori	r24, 0x3F	; 63
+ 2ca:	84 bb       	out	0x14, r24	; 20
+        (1 << LCD_D4) |
+        (1 << LCD_D5) |
+        (1 << LCD_D6) |
+        (1 << LCD_D7);
+
+    LCD_PORT &= ~(
+ 2cc:	85 b3       	in	r24, 0x15	; 21
+ 2ce:	8c 7f       	andi	r24, 0xFC	; 252
+ 2d0:	85 bb       	out	0x15, r24	; 21
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 2d2:	2f ef       	ldi	r18, 0xFF	; 255
+ 2d4:	89 ef       	ldi	r24, 0xF9	; 249
+ 2d6:	90 e0       	ldi	r25, 0x00	; 0
+ 2d8:	21 50       	subi	r18, 0x01	; 1
+ 2da:	80 40       	sbci	r24, 0x00	; 0
+ 2dc:	90 40       	sbci	r25, 0x00	; 0
+ 2de:	e1 f7       	brne	.-8      	; 0x2d8 <main+0x12>
+ 2e0:	00 c0       	rjmp	.+0      	; 0x2e2 <main+0x1c>
+ 2e2:	00 00       	nop
+        (1 << LCD_EN)
+    );
+
+    _delay_ms(40);
+
+    LCD_SendNibble(0x03);
+ 2e4:	83 e0       	ldi	r24, 0x03	; 3
+ 2e6:	d1 de       	rcall	.-606    	; 0x8a <LCD_SendNibble>
+ 2e8:	8f e0       	ldi	r24, 0x0F	; 15
+ 2ea:	97 e2       	ldi	r25, 0x27	; 39
+ 2ec:	01 97       	sbiw	r24, 0x01	; 1
+ 2ee:	f1 f7       	brne	.-4      	; 0x2ec <main+0x26>
+ 2f0:	00 c0       	rjmp	.+0      	; 0x2f2 <main+0x2c>
+ 2f2:	00 00       	nop
+    _delay_ms(5);
+
+    LCD_SendNibble(0x03);
+ 2f4:	83 e0       	ldi	r24, 0x03	; 3
+ 2f6:	c9 de       	rcall	.-622    	; 0x8a <LCD_SendNibble>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 2f8:	8b e2       	ldi	r24, 0x2B	; 43
+ 2fa:	91 e0       	ldi	r25, 0x01	; 1
+ 2fc:	01 97       	sbiw	r24, 0x01	; 1
+ 2fe:	f1 f7       	brne	.-4      	; 0x2fc <main+0x36>
+ 300:	00 c0       	rjmp	.+0      	; 0x302 <main+0x3c>
+ 302:	00 00       	nop
+    _delay_us(150);
+
+    LCD_SendNibble(0x03);
+ 304:	83 e0       	ldi	r24, 0x03	; 3
+ 306:	c1 de       	rcall	.-638    	; 0x8a <LCD_SendNibble>
+    LCD_SendNibble(0x02);
+ 308:	82 e0       	ldi	r24, 0x02	; 2
+ 30a:	bf de       	rcall	.-642    	; 0x8a <LCD_SendNibble>
+
+    LCD_Command(0x28);
+ 30c:	88 e2       	ldi	r24, 0x28	; 40
+ 30e:	f8 de       	rcall	.-528    	; 0x100 <LCD_Command>
+    LCD_Command(0x0C);
+ 310:	8c e0       	ldi	r24, 0x0C	; 12
+ 312:	f6 de       	rcall	.-532    	; 0x100 <LCD_Command>
+    LCD_Command(0x06);
+ 314:	86 e0       	ldi	r24, 0x06	; 6
+ 316:	f4 de       	rcall	.-536    	; 0x100 <LCD_Command>
+    LCD_Command(0x01);
+ 318:	81 e0       	ldi	r24, 0x01	; 1
+ 31a:	f2 de       	rcall	.-540    	; 0x100 <LCD_Command>
+    {'*', '0', '#', 'D'}
+};
+
+static void Keypad_Init(void)
+{
+    KEYPAD_DDR = 0x0F;
+ 31c:	8f e0       	ldi	r24, 0x0F	; 15
+ 31e:	81 bb       	out	0x11, r24	; 17
+    KEYPAD_PORT = 0xFF;
+ 320:	8f ef       	ldi	r24, 0xFF	; 255
+ 322:	82 bb       	out	0x12, r24	; 18
+     * PB3 = MOSI input
+     * PB4 = MISO output
+     * PB5 = SCK input
+     */
+
+    DDRB &= ~(
+ 324:	87 b3       	in	r24, 0x17	; 23
+ 326:	83 7d       	andi	r24, 0xD3	; 211
+ 328:	87 bb       	out	0x17, r24	; 23
+        (1 << PB2) |
+        (1 << PB3) |
+        (1 << PB5)
+    );
+
+    DDRB |= (1 << PB4);
+ 32a:	bc 9a       	sbi	0x17, 4	; 23
+
+    /*
+     * Pull-up on SS.
+     */
+    PORTB |= (1 << PB2);
+ 32c:	c2 9a       	sbi	0x18, 2	; 24
+
+    PrepareTransmitFrame(0);
+ 32e:	80 e0       	ldi	r24, 0x00	; 0
+ 330:	90 e0       	ldi	r25, 0x00	; 0
+ 332:	95 de       	rcall	.-726    	; 0x5e <PrepareTransmitFrame>
+
+    spiIndex = 0;
+ 334:	10 92 7a 00 	sts	0x007A, r1
+
+    /*
+     * Put the first response byte into SPDR.
+     */
+    SPDR = transmitFrame[0];
+ 338:	80 91 7b 00 	lds	r24, 0x007B
+ 33c:	8f b9       	out	0x0f, r24	; 15
+
+    /*
+     * Enable SPI and SPI interrupt.
+     * Mode 0.
+     */
+    SPCR =
+ 33e:	80 ec       	ldi	r24, 0xC0	; 192
+ 340:	8d b9       	out	0x0d, r24	; 13
+        (1 << SPE) |
+        (1 << SPIE);
+
+    sei();
+ 342:	78 94       	sei
+    if (row == 0)
+        address = column;
+    else
+        address = 0x40 + column;
+
+    LCD_Command(0x80 | address);
+ 344:	80 e8       	ldi	r24, 0x80	; 128
+ 346:	dc de       	rcall	.-584    	; 0x100 <LCD_Command>
+    LCD_Init();
+    Keypad_Init();
+    SPI_SlaveInit();
+
+    LCD_Goto(0, 0);
+    LCD_Print("M8 :");
+ 348:	80 e6       	ldi	r24, 0x60	; 96
+ 34a:	90 e0       	ldi	r25, 0x00	; 0
+ 34c:	ca de       	rcall	.-620    	; 0xe2 <LCD_Print>
+    if (row == 0)
+        address = column;
+    else
+        address = 0x40 + column;
+
+    LCD_Command(0x80 | address);
+ 34e:	80 ec       	ldi	r24, 0xC0	; 192
+ 350:	d7 de       	rcall	.-594    	; 0x100 <LCD_Command>
+
+    LCD_Goto(0, 0);
+    LCD_Print("M8 :");
+
+    LCD_Goto(1, 0);
+    LCD_Print("M16:");
+ 352:	85 e6       	ldi	r24, 0x65	; 101
+ 354:	90 e0       	ldi	r25, 0x00	; 0
+ 356:	c5 de       	rcall	.-630    	; 0xe2 <LCD_Print>
+    char key;
+
+    uint16_t inputNumber = 0;
+    uint16_t receivedNumberCopy = 0;
+
+    uint8_t digitCount = 0;
+ 358:	f1 2c       	mov	r15, r1
+
+int main(void)
+{
+    char key;
+
+    uint16_t inputNumber = 0;
+ 35a:	00 e0       	ldi	r16, 0x00	; 0
+ 35c:	10 e0       	ldi	r17, 0x00	; 0
+        }
+    }
+    else if (key == '*')
+    {
+        *inputNumber = 0;
+        *digitCount = 0;
+ 35e:	c1 2c       	mov	r12, r1
+            (*digitCount)++;
+        }
+    }
+    else if (key == '*')
+    {
+        *inputNumber = 0;
+ 360:	d1 2c       	mov	r13, r1
+ 362:	e1 2c       	mov	r14, r1
+
+static char Keypad_GetKey(void)
+{
+    char key;
+
+    key = Keypad_ScanRaw();
+ 364:	dc de       	rcall	.-584    	; 0x11e <Keypad_ScanRaw>
+ 366:	c8 2f       	mov	r28, r24
+
+    if (key != 0)
+ 368:	88 23       	and	r24, r24
+ 36a:	09 f4       	brne	.+2      	; 0x36e <main+0xa8>
+ 36c:	60 c0       	rjmp	.+192    	; 0x42e <main+0x168>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 36e:	8f e3       	ldi	r24, 0x3F	; 63
+ 370:	9c e9       	ldi	r25, 0x9C	; 156
+ 372:	01 97       	sbiw	r24, 0x01	; 1
+ 374:	f1 f7       	brne	.-4      	; 0x372 <main+0xac>
+ 376:	00 c0       	rjmp	.+0      	; 0x378 <main+0xb2>
+ 378:	00 00       	nop
+    {
+        _delay_ms(20);
+
+        if (Keypad_ScanRaw() == key)
+ 37a:	d1 de       	rcall	.-606    	; 0x11e <Keypad_ScanRaw>
+ 37c:	c8 13       	cpse	r28, r24
+ 37e:	57 c0       	rjmp	.+174    	; 0x42e <main+0x168>
+ 380:	06 c0       	rjmp	.+12     	; 0x38e <main+0xc8>
+ 382:	8f e0       	ldi	r24, 0x0F	; 15
+ 384:	97 e2       	ldi	r25, 0x27	; 39
+ 386:	01 97       	sbiw	r24, 0x01	; 1
+ 388:	f1 f7       	brne	.-4      	; 0x386 <main+0xc0>
+ 38a:	00 c0       	rjmp	.+0      	; 0x38c <main+0xc6>
+ 38c:	00 00       	nop
+        {
+            while (Keypad_ScanRaw() != 0)
+ 38e:	c7 de       	rcall	.-626    	; 0x11e <Keypad_ScanRaw>
+ 390:	81 11       	cpse	r24, r1
+ 392:	f7 cf       	rjmp	.-18     	; 0x382 <main+0xbc>
+ 394:	65 c0       	rjmp	.+202    	; 0x460 <__stack+0x1>
+    uint8_t *digitCount
+)
+{
+    if ((key >= '0') && (key <= '9'))
+    {
+        if (*digitCount < 4)
+ 396:	93 e0       	ldi	r25, 0x03	; 3
+ 398:	9f 15       	cp	r25, r15
+ 39a:	08 f4       	brcc	.+2      	; 0x39e <main+0xd8>
+ 39c:	48 c0       	rjmp	.+144    	; 0x42e <main+0x168>
+        {
+            *inputNumber =
+                (*inputNumber * 10) +
+ 39e:	98 01       	movw	r18, r16
+ 3a0:	22 0f       	add	r18, r18
+ 3a2:	33 1f       	adc	r19, r19
+ 3a4:	00 0f       	add	r16, r16
+ 3a6:	11 1f       	adc	r17, r17
+ 3a8:	00 0f       	add	r16, r16
+ 3aa:	11 1f       	adc	r17, r17
+ 3ac:	00 0f       	add	r16, r16
+ 3ae:	11 1f       	adc	r17, r17
+ 3b0:	02 0f       	add	r16, r18
+ 3b2:	13 1f       	adc	r17, r19
+ 3b4:	0c 0f       	add	r16, r28
+ 3b6:	11 1d       	adc	r17, r1
+ 3b8:	00 53       	subi	r16, 0x30	; 48
+ 3ba:	11 09       	sbc	r17, r1
+                (uint16_t)(key - '0');
+
+            (*digitCount)++;
+ 3bc:	f3 94       	inc	r15
+ 3be:	37 c0       	rjmp	.+110    	; 0x42e <main+0x168>
+        }
+    }
+    else if (key == '*')
+ 3c0:	ca 32       	cpi	r28, 0x2A	; 42
+ 3c2:	71 f1       	breq	.+92     	; 0x420 <main+0x15a>
+    {
+        *inputNumber = 0;
+        *digitCount = 0;
+    }
+    else if (key == 'A')
+ 3c4:	c1 34       	cpi	r28, 0x41	; 65
+ 3c6:	79 f4       	brne	.+30     	; 0x3e6 <main+0x120>
+    {
+        *inputNumber /= 10;
+ 3c8:	98 01       	movw	r18, r16
+ 3ca:	ad ec       	ldi	r26, 0xCD	; 205
+ 3cc:	bc ec       	ldi	r27, 0xCC	; 204
+ 3ce:	4e d0       	rcall	.+156    	; 0x46c <__umulhisi3>
+ 3d0:	8c 01       	movw	r16, r24
+ 3d2:	16 95       	lsr	r17
+ 3d4:	07 95       	ror	r16
+ 3d6:	16 95       	lsr	r17
+ 3d8:	07 95       	ror	r16
+ 3da:	16 95       	lsr	r17
+ 3dc:	07 95       	ror	r16
+
+        if (*digitCount > 0)
+ 3de:	ff 20       	and	r15, r15
+ 3e0:	31 f1       	breq	.+76     	; 0x42e <main+0x168>
+            (*digitCount)--;
+ 3e2:	fa 94       	dec	r15
+ 3e4:	24 c0       	rjmp	.+72     	; 0x42e <main+0x168>
+    }
+    else if (key == 'B')
+ 3e6:	c2 34       	cpi	r28, 0x42	; 66
+ 3e8:	39 f4       	brne	.+14     	; 0x3f8 <main+0x132>
+    {
+        if (*inputNumber < 9999)
+ 3ea:	0f 30       	cpi	r16, 0x0F	; 15
+ 3ec:	27 e2       	ldi	r18, 0x27	; 39
+ 3ee:	12 07       	cpc	r17, r18
+ 3f0:	f0 f4       	brcc	.+60     	; 0x42e <main+0x168>
+            (*inputNumber)++;
+ 3f2:	0f 5f       	subi	r16, 0xFF	; 255
+ 3f4:	1f 4f       	sbci	r17, 0xFF	; 255
+ 3f6:	1b c0       	rjmp	.+54     	; 0x42e <main+0x168>
+    }
+    else if (key == 'C')
+ 3f8:	c3 34       	cpi	r28, 0x43	; 67
+ 3fa:	31 f4       	brne	.+12     	; 0x408 <main+0x142>
+    {
+        if (*inputNumber > 0)
+ 3fc:	01 15       	cp	r16, r1
+ 3fe:	11 05       	cpc	r17, r1
+ 400:	b1 f0       	breq	.+44     	; 0x42e <main+0x168>
+            (*inputNumber)--;
+ 402:	01 50       	subi	r16, 0x01	; 1
+ 404:	11 09       	sbc	r17, r1
+ 406:	13 c0       	rjmp	.+38     	; 0x42e <main+0x168>
+    }
+    else if (key == 'D')
+ 408:	c4 34       	cpi	r28, 0x44	; 68
+ 40a:	71 f0       	breq	.+28     	; 0x428 <main+0x162>
+    {
+        *inputNumber = 0;
+        *digitCount = 0;
+    }
+    else if (key == '#')
+ 40c:	c3 32       	cpi	r28, 0x23	; 35
+ 40e:	79 f4       	brne	.+30     	; 0x42e <main+0x168>
+    {
+        /*
+         * Confirm the slave number.
+         */
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+ 410:	8f b7       	in	r24, 0x3f	; 63
+    return 1;
+}
+
+static __inline__ uint8_t __iCliRetVal(void)
+{
+    cli();
+ 412:	f8 94       	cli
+        {
+            sendNumber = *inputNumber;
+ 414:	10 93 86 00 	sts	0x0086, r17
+ 418:	00 93 85 00 	sts	0x0085, r16
+    (void)__s;
+}
+
+static __inline__ void __iRestore(const  uint8_t *__s)
+{
+    SREG = *__s;
+ 41c:	8f bf       	out	0x3f, r24	; 63
+    __asm__ volatile ("" ::: "memory");
+ 41e:	07 c0       	rjmp	.+14     	; 0x42e <main+0x168>
+        }
+    }
+    else if (key == '*')
+    {
+        *inputNumber = 0;
+        *digitCount = 0;
+ 420:	fc 2c       	mov	r15, r12
+            (*digitCount)++;
+        }
+    }
+    else if (key == '*')
+    {
+        *inputNumber = 0;
+ 422:	0d 2d       	mov	r16, r13
+ 424:	1e 2d       	mov	r17, r14
+ 426:	03 c0       	rjmp	.+6      	; 0x42e <main+0x168>
+            (*inputNumber)--;
+    }
+    else if (key == 'D')
+    {
+        *inputNumber = 0;
+        *digitCount = 0;
+ 428:	fc 2c       	mov	r15, r12
+        if (*inputNumber > 0)
+            (*inputNumber)--;
+    }
+    else if (key == 'D')
+    {
+        *inputNumber = 0;
+ 42a:	0d 2d       	mov	r16, r13
+ 42c:	1e 2d       	mov	r17, r14
+
+        /*
+         * remoteNumber is changed inside the SPI ISR,
+         * so copy it atomically.
+         */
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+ 42e:	8f b7       	in	r24, 0x3f	; 63
+    return 1;
+}
+
+static __inline__ uint8_t __iCliRetVal(void)
+{
+    cli();
+ 430:	f8 94       	cli
+        {
+            receivedNumberCopy = remoteNumber;
+ 432:	c0 91 83 00 	lds	r28, 0x0083
+ 436:	d0 91 84 00 	lds	r29, 0x0084
+    (void)__s;
+}
+
+static __inline__ void __iRestore(const  uint8_t *__s)
+{
+    SREG = *__s;
+ 43a:	8f bf       	out	0x3f, r24	; 63
+    if (row == 0)
+        address = column;
+    else
+        address = 0x40 + column;
+
+    LCD_Command(0x80 | address);
+ 43c:	85 e8       	ldi	r24, 0x85	; 133
+ 43e:	60 de       	rcall	.-832    	; 0x100 <LCD_Command>
+        {
+            receivedNumberCopy = remoteNumber;
+        }
+
+        LCD_Goto(0, 5);
+        LCD_PrintNumber(inputNumber);
+ 440:	c8 01       	movw	r24, r16
+ 442:	b0 de       	rcall	.-672    	; 0x1a4 <LCD_PrintNumber>
+    if (row == 0)
+        address = column;
+    else
+        address = 0x40 + column;
+
+    LCD_Command(0x80 | address);
+ 444:	85 ec       	ldi	r24, 0xC5	; 197
+ 446:	5c de       	rcall	.-840    	; 0x100 <LCD_Command>
+
+        LCD_Goto(0, 5);
+        LCD_PrintNumber(inputNumber);
+
+        LCD_Goto(1, 5);
+        LCD_PrintNumber(receivedNumberCopy);
+ 448:	ce 01       	movw	r24, r28
+ 44a:	ac de       	rcall	.-680    	; 0x1a4 <LCD_PrintNumber>
+ 44c:	8f e7       	ldi	r24, 0x7F	; 127
+ 44e:	98 e3       	ldi	r25, 0x38	; 56
+ 450:	21 e0       	ldi	r18, 0x01	; 1
+ 452:	81 50       	subi	r24, 0x01	; 1
+ 454:	90 40       	sbci	r25, 0x00	; 0
+ 456:	20 40       	sbci	r18, 0x00	; 0
+ 458:	e1 f7       	brne	.-8      	; 0x452 <main+0x18c>
+ 45a:	00 c0       	rjmp	.+0      	; 0x45c <main+0x196>
+ 45c:	00 00       	nop
+ 45e:	82 cf       	rjmp	.-252    	; 0x364 <main+0x9e>
+    char key,
+    uint16_t *inputNumber,
+    uint8_t *digitCount
+)
+{
+    if ((key >= '0') && (key <= '9'))
+ 460:	80 ed       	ldi	r24, 0xD0	; 208
+ 462:	8c 0f       	add	r24, r28
+ 464:	8a 30       	cpi	r24, 0x0A	; 10
+ 466:	08 f4       	brcc	.+2      	; 0x46a <__stack+0xb>
+ 468:	96 cf       	rjmp	.-212    	; 0x396 <main+0xd0>
+ 46a:	aa cf       	rjmp	.-172    	; 0x3c0 <main+0xfa>
+
+0000046c <__umulhisi3>:
+ 46c:	a2 9f       	mul	r26, r18
+ 46e:	b0 01       	movw	r22, r0
+ 470:	b3 9f       	mul	r27, r19
+ 472:	c0 01       	movw	r24, r0
+ 474:	a3 9f       	mul	r26, r19
+ 476:	01 d0       	rcall	.+2      	; 0x47a <__umulhisi3+0xe>
+ 478:	b2 9f       	mul	r27, r18
+ 47a:	70 0d       	add	r23, r0
+ 47c:	81 1d       	adc	r24, r1
+ 47e:	11 24       	eor	r1, r1
+ 480:	91 1d       	adc	r25, r1
+ 482:	08 95       	ret
+
+00000484 <__itoa_ncheck>:
+ 484:	bb 27       	eor	r27, r27
+ 486:	4a 30       	cpi	r20, 0x0A	; 10
+ 488:	31 f4       	brne	.+12     	; 0x496 <__itoa_ncheck+0x12>
+ 48a:	99 23       	and	r25, r25
+ 48c:	22 f4       	brpl	.+8      	; 0x496 <__itoa_ncheck+0x12>
+ 48e:	bd e2       	ldi	r27, 0x2D	; 45
+ 490:	90 95       	com	r25
+ 492:	81 95       	neg	r24
+ 494:	9f 4f       	sbci	r25, 0xFF	; 255
+ 496:	01 c0       	rjmp	.+2      	; 0x49a <__utoa_common>
+
+00000498 <__utoa_ncheck>:
+ 498:	bb 27       	eor	r27, r27
+
+0000049a <__utoa_common>:
+ 49a:	fb 01       	movw	r30, r22
+ 49c:	55 27       	eor	r21, r21
+ 49e:	aa 27       	eor	r26, r26
+ 4a0:	88 0f       	add	r24, r24
+ 4a2:	99 1f       	adc	r25, r25
+ 4a4:	aa 1f       	adc	r26, r26
+ 4a6:	a4 17       	cp	r26, r20
+ 4a8:	10 f0       	brcs	.+4      	; 0x4ae <__utoa_common+0x14>
+ 4aa:	a4 1b       	sub	r26, r20
+ 4ac:	83 95       	inc	r24
+ 4ae:	50 51       	subi	r21, 0x10	; 16
+ 4b0:	b9 f7       	brne	.-18     	; 0x4a0 <__utoa_common+0x6>
+ 4b2:	a0 5d       	subi	r26, 0xD0	; 208
+ 4b4:	aa 33       	cpi	r26, 0x3A	; 58
+ 4b6:	08 f0       	brcs	.+2      	; 0x4ba <__utoa_common+0x20>
+ 4b8:	a9 5d       	subi	r26, 0xD9	; 217
+ 4ba:	a1 93       	st	Z+, r26
+ 4bc:	00 97       	sbiw	r24, 0x00	; 0
+ 4be:	79 f7       	brne	.-34     	; 0x49e <__utoa_common+0x4>
+ 4c0:	b1 11       	cpse	r27, r1
+ 4c2:	b1 93       	st	Z+, r27
+ 4c4:	11 92       	st	Z+, r1
+ 4c6:	cb 01       	movw	r24, r22
+ 4c8:	00 c0       	rjmp	.+0      	; 0x4ca <strrev>
+
+000004ca <strrev>:
+ 4ca:	dc 01       	movw	r26, r24
+ 4cc:	fc 01       	movw	r30, r24
+ 4ce:	67 2f       	mov	r22, r23
+ 4d0:	71 91       	ld	r23, Z+
+ 4d2:	77 23       	and	r23, r23
+ 4d4:	e1 f7       	brne	.-8      	; 0x4ce <strrev+0x4>
+ 4d6:	32 97       	sbiw	r30, 0x02	; 2
+ 4d8:	04 c0       	rjmp	.+8      	; 0x4e2 <strrev+0x18>
+ 4da:	7c 91       	ld	r23, X
+ 4dc:	6d 93       	st	X+, r22
+ 4de:	70 83       	st	Z, r23
+ 4e0:	62 91       	ld	r22, -Z
+ 4e2:	ae 17       	cp	r26, r30
+ 4e4:	bf 07       	cpc	r27, r31
+ 4e6:	c8 f3       	brcs	.-14     	; 0x4da <strrev+0x10>
+ 4e8:	08 95       	ret
+
+000004ea <_exit>:
+ 4ea:	f8 94       	cli
+
+000004ec <__stop_program>:
+ 4ec:	ff cf       	rjmp	.-2      	; 0x4ec <__stop_program>
