@@ -280,9 +280,9 @@ END GROUP
  .text.Keypad_ScanRaw
                 0x0000011e       0x86 Atmega16A.o
  .text.LCD_PrintNumber
-                0x000001a4       0x7a Atmega16A.o
- .text.main     0x0000021e      0x23e Atmega16A.o
-                0x0000021e                main
+                0x000001a4       0x6a Atmega16A.o
+ .text.main     0x0000020e      0x24e Atmega16A.o
+                0x0000020e                main
  .text.libgcc.mul
                 0x0000045c       0x1e c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_umulhisi3.o)
                 0x0000045c                __umulhisi3
@@ -419,30 +419,30 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xd1f
+.debug_info     0x00000000      0xd84
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000      0xd1f Atmega16A.o
+ .debug_info    0x00000000      0xd84 Atmega16A.o
 
-.debug_abbrev   0x00000000      0x329
+.debug_abbrev   0x00000000      0x310
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x329 Atmega16A.o
+ .debug_abbrev  0x00000000      0x310 Atmega16A.o
 
-.debug_line     0x00000000      0x2fd
+.debug_line     0x00000000      0x303
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x2fd Atmega16A.o
+ .debug_line    0x00000000      0x303 Atmega16A.o
 
 .debug_frame    0x00000000       0xd8
  *(.debug_frame)
  .debug_frame   0x00000000       0xd8 Atmega16A.o
 
-.debug_str      0x00000000      0x3c0
+.debug_str      0x00000000      0x3f5
  *(.debug_str)
- .debug_str     0x00000000      0x3c0 Atmega16A.o
-                                0x3fe (size before relaxing)
+ .debug_str     0x00000000      0x3f5 Atmega16A.o
+                                0x433 (size before relaxing)
 
-.debug_loc      0x00000000      0x8b4
+.debug_loc      0x00000000      0x8fd
  *(.debug_loc)
- .debug_loc     0x00000000      0x8b4 Atmega16A.o
+ .debug_loc     0x00000000      0x8fd Atmega16A.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -462,9 +462,9 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x78
+.debug_ranges   0x00000000       0x90
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x78 Atmega16A.o
+ .debug_ranges  0x00000000       0x90 Atmega16A.o
 
 .debug_macro
  *(.debug_macro)

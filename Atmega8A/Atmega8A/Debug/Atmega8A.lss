@@ -3,29 +3,29 @@ Atmega8A.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000004ee  00000000  00000000  00000094  2**1
+  0 .text         000004e8  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         0000001a  00800060  000004ee  00000582  2**0
+  1 .data         0000001a  00800060  000004e8  0000057c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000000d  0080007a  0080007a  0000059c  2**0
+  2 .bss          0000000d  0080007a  0080007a  00000596  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  0000059c  2**0
+  3 .comment      00000030  00000000  00000000  00000596  2**0
                   CONTENTS, READONLY
-  4 .debug_aranges 00000060  00000000  00000000  000005cc  2**0
+  4 .debug_aranges 00000060  00000000  00000000  000005c6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000d8d  00000000  00000000  0000062c  2**0
+  5 .debug_info   00000d9b  00000000  00000000  00000626  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000386  00000000  00000000  000013b9  2**0
+  6 .debug_abbrev 00000386  00000000  00000000  000013c1  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000033b  00000000  00000000  0000173f  2**0
+  7 .debug_line   0000033a  00000000  00000000  00001747  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000013c  00000000  00000000  00001a7c  2**2
+  8 .debug_frame  0000013c  00000000  00000000  00001a84  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000403  00000000  00000000  00001bb8  2**0
+  9 .debug_str    00000427  00000000  00000000  00001bc0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000008d8  00000000  00000000  00001fbb  2**0
+ 10 .debug_loc    000008d8  00000000  00000000  00001fe7  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000070  00000000  00000000  00002893  2**0
+ 11 .debug_ranges 00000070  00000000  00000000  000028bf  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -63,7 +63,7 @@ Disassembly of section .text:
   32:	10 e0       	ldi	r17, 0x00	; 0
   34:	a0 e6       	ldi	r26, 0x60	; 96
   36:	b0 e0       	ldi	r27, 0x00	; 0
-  38:	ee ee       	ldi	r30, 0xEE	; 238
+  38:	e8 ee       	ldi	r30, 0xE8	; 232
   3a:	f4 e0       	ldi	r31, 0x04	; 4
   3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
   3e:	05 90       	lpm	r0, Z+
@@ -86,17 +86,17 @@ Disassembly of section .text:
   54:	b2 07       	cpc	r27, r18
   56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
   58:	36 d1       	rcall	.+620    	; 0x2c6 <main>
-  5a:	47 c2       	rjmp	.+1166   	; 0x4ea <_exit>
+  5a:	44 c2       	rjmp	.+1160   	; 0x4e4 <_exit>
 
 0000005c <__bad_interrupt>:
   5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
 
-0000005e <PrepareTransmitFrame>:
+0000005e <BuildTransmitFrame>:
 {
     return header ^ highByte ^ lowByte;
 }
 
-static void PrepareTransmitFrame(uint16_t number)
+static void BuildTransmitFrame(uint16_t number)
 {
   5e:	cf 93       	push	r28
   60:	df 93       	push	r29
@@ -253,7 +253,7 @@ static void LCD_Print(const char *text)
   e2:	cf 93       	push	r28
   e4:	df 93       	push	r29
   e6:	ec 01       	movw	r28, r24
-    while (*text)
+    while (*text != '\0')
   e8:	88 81       	ld	r24, Y
   ea:	88 23       	and	r24, r24
   ec:	31 f0       	breq	.+12     	; 0xfa <LCD_Print+0x18>
@@ -271,7 +271,7 @@ static void LCD_Character(char character)
 
 static void LCD_Print(const char *text)
 {
-    while (*text)
+    while (*text != '\0')
   f4:	89 91       	ld	r24, Y+
   f6:	81 11       	cpse	r24, r1
   f8:	fb cf       	rjmp	.-10     	; 0xf0 <LCD_Print+0xe>
@@ -394,7 +394,6 @@ static char Keypad_ScanRaw(void)
  170:	02 c0       	rjmp	.+4      	; 0x176 <Keypad_ScanRaw+0x58>
  172:	e0 e0       	ldi	r30, 0x00	; 0
  174:	f0 e0       	ldi	r31, 0x00	; 0
-            {
                 return keypadMap[row][column];
  176:	cc 0f       	add	r28, r28
  178:	dd 1f       	adc	r29, r29
@@ -427,8 +426,8 @@ static char Keypad_ScanRaw(void)
  196:	64 30       	cpi	r22, 0x04	; 4
  198:	71 05       	cpc	r23, r1
  19a:	39 f6       	brne	.-114    	; 0x12a <Keypad_ScanRaw+0xc>
+            if (!(KEYPAD_PIN & (1 << (column + 4))))
                 return keypadMap[row][column];
-            }
         }
     }
 
@@ -466,10 +465,10 @@ static void LCD_PrintNumber(uint16_t number)
  1ba:	be 01       	movw	r22, r28
  1bc:	6f 5f       	subi	r22, 0xFF	; 255
  1be:	7f 4f       	sbci	r23, 0xFF	; 255
- 1c0:	61 d1       	rcall	.+706    	; 0x484 <__itoa_ncheck>
+ 1c0:	5e d1       	rcall	.+700    	; 0x47e <__itoa_ncheck>
     char buffer[6];
 
-    itoa(number, buffer, 10);
+    itoa((int)number, buffer, 10);
     LCD_Print(buffer);
  1c2:	ce 01       	movw	r24, r28
  1c4:	01 96       	adiw	r24, 0x01	; 1
@@ -563,10 +562,10 @@ static void LCD_Character(char character)
  210:	08 95       	ret
 
 00000212 <__vector_10>:
-
-    sei();
-}
-
+ *
+ * Important:
+ * Only this ISR writes new transfer data to SPDR.
+ */
 ISR(SPI_STC_vect)
 {
  212:	1f 92       	push	r1
@@ -586,9 +585,11 @@ ISR(SPI_STC_vect)
  22e:	bf 93       	push	r27
  230:	ef 93       	push	r30
  232:	ff 93       	push	r31
-    uint8_t receivedByte;
-    uint16_t localCopy;
+    uint16_t localNumberSnapshot;
 
+    /*
+     * Read the byte received from ATmega16A.
+     */
     receivedByte = SPDR;
  234:	8f b1       	in	r24, 0x0f	; 15
 
@@ -604,90 +605,99 @@ ISR(SPI_STC_vect)
  246:	8f 5f       	subi	r24, 0xFF	; 255
  248:	80 93 7a 00 	sts	0x007A, r24
 
-    if (spiIndex >= 4)
+    if (spiIndex >= FRAME_SIZE)
  24c:	80 91 7a 00 	lds	r24, 0x007A
  250:	84 30       	cpi	r24, 0x04	; 4
  252:	08 f1       	brcs	.+66     	; 0x296 <__vector_10+0x84>
     {
-        spiIndex = 0;
- 254:	10 92 7a 00 	sts	0x007A, r1
-
         /*
-         * Validate frame received from ATmega16A.
+         * Complete four-byte frame received.
          */
-        if (
-            receiveFrame[0] == FRAME_HEADER &&
- 258:	80 91 7f 00 	lds	r24, 0x007F
-        spiIndex = 0;
+        expectedChecksum = CalculateChecksum(
+ 254:	20 91 81 00 	lds	r18, 0x0081
+ 258:	30 91 80 00 	lds	r19, 0x0080
+ 25c:	ef e7       	ldi	r30, 0x7F	; 127
+ 25e:	f0 e0       	ldi	r31, 0x00	; 0
+ 260:	90 81       	ld	r25, Z
+            receiveFrame[1],
+            receiveFrame[2]
+        );
 
-        /*
-         * Validate frame received from ATmega16A.
-         */
         if (
- 25c:	85 3a       	cpi	r24, 0xA5	; 165
- 25e:	b1 f4       	brne	.+44     	; 0x28c <__vector_10+0x7a>
-            receiveFrame[0] == FRAME_HEADER &&
-            receiveFrame[3] ==
- 260:	90 91 82 00 	lds	r25, 0x0082
-            CalculateChecksum(
- 264:	80 91 81 00 	lds	r24, 0x0081
- 268:	30 91 80 00 	lds	r19, 0x0080
- 26c:	20 91 7f 00 	lds	r18, 0x007F
+            (receiveFrame[0] == FRAME_HEADER) &&
+ 262:	80 81       	ld	r24, Z
+            receiveFrame[0],
+            receiveFrame[1],
+            receiveFrame[2]
+        );
+
+        if (
+ 264:	85 3a       	cpi	r24, 0xA5	; 165
+ 266:	81 f4       	brne	.+32     	; 0x288 <__vector_10+0x76>
+            (receiveFrame[0] == FRAME_HEADER) &&
+            (receiveFrame[3] == expectedChecksum)
+ 268:	80 91 82 00 	lds	r24, 0x0082
     uint8_t header,
     uint8_t highByte,
     uint8_t lowByte
 )
 {
     return header ^ highByte ^ lowByte;
- 270:	83 27       	eor	r24, r19
- 272:	82 27       	eor	r24, r18
+ 26c:	23 27       	eor	r18, r19
+ 26e:	92 27       	eor	r25, r18
+            receiveFrame[1],
+            receiveFrame[2]
+        );
 
-        /*
-         * Validate frame received from ATmega16A.
-         */
         if (
-            receiveFrame[0] == FRAME_HEADER &&
- 274:	98 13       	cpse	r25, r24
- 276:	0a c0       	rjmp	.+20     	; 0x28c <__vector_10+0x7a>
-                receiveFrame[2]
-            )
+            (receiveFrame[0] == FRAME_HEADER) &&
+ 270:	89 13       	cpse	r24, r25
+ 272:	0a c0       	rjmp	.+20     	; 0x288 <__vector_10+0x76>
+            (receiveFrame[3] == expectedChecksum)
         )
         {
-            remoteNumber =
+            numberFromATmega16 =
                 ((uint16_t)receiveFrame[1] << 8) |
- 278:	20 91 80 00 	lds	r18, 0x0080
-                receiveFrame[2];
- 27c:	80 91 81 00 	lds	r24, 0x0081
-                receiveFrame[2]
-            )
+ 274:	20 91 80 00 	lds	r18, 0x0080
+                (uint16_t)receiveFrame[2];
+ 278:	80 91 81 00 	lds	r24, 0x0081
+            (receiveFrame[0] == FRAME_HEADER) &&
+            (receiveFrame[3] == expectedChecksum)
         )
         {
-            remoteNumber =
+            numberFromATmega16 =
                 ((uint16_t)receiveFrame[1] << 8) |
- 280:	90 e0       	ldi	r25, 0x00	; 0
- 282:	92 2b       	or	r25, r18
-                receiveFrame[1],
-                receiveFrame[2]
-            )
+ 27c:	90 e0       	ldi	r25, 0x00	; 0
+ 27e:	92 2b       	or	r25, r18
+        if (
+            (receiveFrame[0] == FRAME_HEADER) &&
+            (receiveFrame[3] == expectedChecksum)
         )
         {
-            remoteNumber =
- 284:	90 93 84 00 	sts	0x0084, r25
- 288:	80 93 83 00 	sts	0x0083, r24
+            numberFromATmega16 =
+ 280:	90 93 84 00 	sts	0x0084, r25
+ 284:	80 93 83 00 	sts	0x0083, r24
         }
 
         /*
-         * Prepare the slave number for the next frame.
+         * Snapshot the newest confirmed ATmega8A number.
          */
-        localCopy = sendNumber;
- 28c:	80 91 85 00 	lds	r24, 0x0085
- 290:	90 91 86 00 	lds	r25, 0x0086
-        PrepareTransmitFrame(localCopy);
- 294:	e4 de       	rcall	.-568    	; 0x5e <PrepareTransmitFrame>
-    }
+        localNumberSnapshot = confirmedNumber;
+ 288:	80 91 85 00 	lds	r24, 0x0085
+ 28c:	90 91 86 00 	lds	r25, 0x0086
 
-    /*
-     * Load the next response byte.
+        /*
+         * Prepare response for the next transaction.
+         */
+        BuildTransmitFrame(localNumberSnapshot);
+ 290:	e6 de       	rcall	.-564    	; 0x5e <BuildTransmitFrame>
+
+        spiIndex = 0;
+ 292:	10 92 7a 00 	sts	0x007A, r1
+     * Preload the next response byte.
+     *
+     * After the final byte, this loads byte zero for the
+     * next complete SPI transaction.
      */
     SPDR = transmitFrame[spiIndex];
  296:	e0 91 7a 00 	lds	r30, 0x007A
@@ -801,11 +811,11 @@ static void LCD_Init(void)
     LCD_Command(0x01);
  318:	81 e0       	ldi	r24, 0x01	; 1
  31a:	f2 de       	rcall	.-540    	; 0x100 <LCD_Command>
-    {'*', '0', '#', 'D'}
-};
-
-static void Keypad_Init(void)
 {
+    /*
+     * PD0–PD3 are row outputs.
+     * PD4–PD7 are column inputs with pull-ups.
+     */
     KEYPAD_DDR = 0x0F;
  31c:	8f e0       	ldi	r24, 0x0F	; 15
  31e:	81 bb       	out	0x11, r24	; 17
@@ -830,29 +840,30 @@ static void Keypad_Init(void)
  32a:	bc 9a       	sbi	0x17, 4	; 23
 
     /*
-     * Pull-up on SS.
+     * Enable pull-up on SS.
      */
     PORTB |= (1 << PB2);
  32c:	c2 9a       	sbi	0x18, 2	; 24
 
-    PrepareTransmitFrame(0);
+    BuildTransmitFrame(0);
  32e:	80 e0       	ldi	r24, 0x00	; 0
  330:	90 e0       	ldi	r25, 0x00	; 0
- 332:	95 de       	rcall	.-726    	; 0x5e <PrepareTransmitFrame>
+ 332:	95 de       	rcall	.-726    	; 0x5e <BuildTransmitFrame>
 
     spiIndex = 0;
  334:	10 92 7a 00 	sts	0x007A, r1
-
-    /*
-     * Put the first response byte into SPDR.
+     * Preload the first byte before the master starts.
+     *
+     * SPDR is not written anywhere else outside the ISR
+     * after initialization. This prevents write collisions.
      */
     SPDR = transmitFrame[0];
  338:	80 91 7b 00 	lds	r24, 0x007B
  33c:	8f b9       	out	0x0f, r24	; 15
 
     /*
-     * Enable SPI and SPI interrupt.
-     * Mode 0.
+     * Enable SPI and SPI transfer-complete interrupt.
+     * Slave mode and SPI Mode 0.
      */
     SPCR =
  33e:	80 ec       	ldi	r24, 0xC0	; 192
@@ -970,7 +981,7 @@ static char Keypad_GetKey(void)
  38e:	c7 de       	rcall	.-626    	; 0x11e <Keypad_ScanRaw>
  390:	81 11       	cpse	r24, r1
  392:	f7 cf       	rjmp	.-18     	; 0x382 <main+0xbc>
- 394:	65 c0       	rjmp	.+202    	; 0x460 <__stack+0x1>
+ 394:	62 c0       	rjmp	.+196    	; 0x45a <main+0x194>
     uint8_t *digitCount
 )
 {
@@ -983,7 +994,7 @@ static char Keypad_GetKey(void)
  39c:	48 c0       	rjmp	.+144    	; 0x42e <main+0x168>
         {
             *inputNumber =
-                (*inputNumber * 10) +
+                (*inputNumber * 10U) +
  39e:	98 01       	movw	r18, r16
  3a0:	22 0f       	add	r18, r18
  3a2:	33 1f       	adc	r19, r19
@@ -1017,11 +1028,11 @@ static char Keypad_GetKey(void)
  3c4:	c1 34       	cpi	r28, 0x41	; 65
  3c6:	79 f4       	brne	.+30     	; 0x3e6 <main+0x120>
     {
-        *inputNumber /= 10;
+        *inputNumber /= 10U;
  3c8:	98 01       	movw	r18, r16
  3ca:	ad ec       	ldi	r26, 0xCD	; 205
  3cc:	bc ec       	ldi	r27, 0xCC	; 204
- 3ce:	4e d0       	rcall	.+156    	; 0x46c <__umulhisi3>
+ 3ce:	4b d0       	rcall	.+150    	; 0x466 <__umulhisi3>
  3d0:	8c 01       	movw	r16, r24
  3d2:	16 95       	lsr	r17
  3d4:	07 95       	ror	r16
@@ -1074,9 +1085,10 @@ static char Keypad_GetKey(void)
     else if (key == '#')
  40c:	c3 32       	cpi	r28, 0x23	; 35
  40e:	79 f4       	brne	.+30     	; 0x42e <main+0x168>
-    {
-        /*
-         * Confirm the slave number.
+         * Confirm the local number.
+         *
+         * The SPI ISR will include this value in the next
+         * prepared response frame.
          */
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
  410:	8f b7       	in	r24, 0x3f	; 63
@@ -1088,7 +1100,7 @@ static __inline__ uint8_t __iCliRetVal(void)
     cli();
  412:	f8 94       	cli
         {
-            sendNumber = *inputNumber;
+            confirmedNumber = *inputNumber;
  414:	10 93 86 00 	sts	0x0086, r17
  418:	00 93 85 00 	sts	0x0085, r16
     (void)__s;
@@ -1131,10 +1143,10 @@ static __inline__ void __iRestore(const  uint8_t *__s)
         *inputNumber = 0;
  42a:	0d 2d       	mov	r16, r13
  42c:	1e 2d       	mov	r17, r14
+        }
 
         /*
-         * remoteNumber is changed inside the SPI ISR,
-         * so copy it atomically.
+         * Safely copy the 16-bit value updated by the ISR.
          */
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
  42e:	8f b7       	in	r24, 0x3f	; 63
@@ -1146,7 +1158,7 @@ static __inline__ uint8_t __iCliRetVal(void)
     cli();
  430:	f8 94       	cli
         {
-            receivedNumberCopy = remoteNumber;
+            receivedNumberCopy = numberFromATmega16;
  432:	c0 91 83 00 	lds	r28, 0x0083
  436:	d0 91 84 00 	lds	r29, 0x0084
     (void)__s;
@@ -1165,7 +1177,7 @@ static __inline__ void __iRestore(const  uint8_t *__s)
  43c:	85 e8       	ldi	r24, 0x85	; 133
  43e:	60 de       	rcall	.-832    	; 0x100 <LCD_Command>
         {
-            receivedNumberCopy = remoteNumber;
+            receivedNumberCopy = numberFromATmega16;
         }
 
         LCD_Goto(0, 5);
@@ -1188,104 +1200,101 @@ static __inline__ void __iRestore(const  uint8_t *__s)
         LCD_PrintNumber(receivedNumberCopy);
  448:	ce 01       	movw	r24, r28
  44a:	ac de       	rcall	.-680    	; 0x1a4 <LCD_PrintNumber>
- 44c:	8f e7       	ldi	r24, 0x7F	; 127
- 44e:	98 e3       	ldi	r25, 0x38	; 56
- 450:	21 e0       	ldi	r18, 0x01	; 1
- 452:	81 50       	subi	r24, 0x01	; 1
- 454:	90 40       	sbci	r25, 0x00	; 0
- 456:	20 40       	sbci	r18, 0x00	; 0
- 458:	e1 f7       	brne	.-8      	; 0x452 <main+0x18c>
- 45a:	00 c0       	rjmp	.+0      	; 0x45c <main+0x196>
- 45c:	00 00       	nop
- 45e:	82 cf       	rjmp	.-252    	; 0x364 <main+0x9e>
+ 44c:	8f e3       	ldi	r24, 0x3F	; 63
+ 44e:	9c e9       	ldi	r25, 0x9C	; 156
+ 450:	01 97       	sbiw	r24, 0x01	; 1
+ 452:	f1 f7       	brne	.-4      	; 0x450 <main+0x18a>
+ 454:	00 c0       	rjmp	.+0      	; 0x456 <main+0x190>
+ 456:	00 00       	nop
+ 458:	85 cf       	rjmp	.-246    	; 0x364 <main+0x9e>
     char key,
     uint16_t *inputNumber,
     uint8_t *digitCount
 )
 {
     if ((key >= '0') && (key <= '9'))
- 460:	80 ed       	ldi	r24, 0xD0	; 208
- 462:	8c 0f       	add	r24, r28
- 464:	8a 30       	cpi	r24, 0x0A	; 10
- 466:	08 f4       	brcc	.+2      	; 0x46a <__stack+0xb>
- 468:	96 cf       	rjmp	.-212    	; 0x396 <main+0xd0>
- 46a:	aa cf       	rjmp	.-172    	; 0x3c0 <main+0xfa>
+ 45a:	80 ed       	ldi	r24, 0xD0	; 208
+ 45c:	8c 0f       	add	r24, r28
+ 45e:	8a 30       	cpi	r24, 0x0A	; 10
+ 460:	08 f4       	brcc	.+2      	; 0x464 <__stack+0x5>
+ 462:	99 cf       	rjmp	.-206    	; 0x396 <main+0xd0>
+ 464:	ad cf       	rjmp	.-166    	; 0x3c0 <main+0xfa>
 
-0000046c <__umulhisi3>:
- 46c:	a2 9f       	mul	r26, r18
- 46e:	b0 01       	movw	r22, r0
- 470:	b3 9f       	mul	r27, r19
- 472:	c0 01       	movw	r24, r0
- 474:	a3 9f       	mul	r26, r19
- 476:	01 d0       	rcall	.+2      	; 0x47a <__umulhisi3+0xe>
- 478:	b2 9f       	mul	r27, r18
- 47a:	70 0d       	add	r23, r0
- 47c:	81 1d       	adc	r24, r1
- 47e:	11 24       	eor	r1, r1
- 480:	91 1d       	adc	r25, r1
- 482:	08 95       	ret
+00000466 <__umulhisi3>:
+ 466:	a2 9f       	mul	r26, r18
+ 468:	b0 01       	movw	r22, r0
+ 46a:	b3 9f       	mul	r27, r19
+ 46c:	c0 01       	movw	r24, r0
+ 46e:	a3 9f       	mul	r26, r19
+ 470:	01 d0       	rcall	.+2      	; 0x474 <__umulhisi3+0xe>
+ 472:	b2 9f       	mul	r27, r18
+ 474:	70 0d       	add	r23, r0
+ 476:	81 1d       	adc	r24, r1
+ 478:	11 24       	eor	r1, r1
+ 47a:	91 1d       	adc	r25, r1
+ 47c:	08 95       	ret
 
-00000484 <__itoa_ncheck>:
- 484:	bb 27       	eor	r27, r27
- 486:	4a 30       	cpi	r20, 0x0A	; 10
- 488:	31 f4       	brne	.+12     	; 0x496 <__itoa_ncheck+0x12>
- 48a:	99 23       	and	r25, r25
- 48c:	22 f4       	brpl	.+8      	; 0x496 <__itoa_ncheck+0x12>
- 48e:	bd e2       	ldi	r27, 0x2D	; 45
- 490:	90 95       	com	r25
- 492:	81 95       	neg	r24
- 494:	9f 4f       	sbci	r25, 0xFF	; 255
- 496:	01 c0       	rjmp	.+2      	; 0x49a <__utoa_common>
+0000047e <__itoa_ncheck>:
+ 47e:	bb 27       	eor	r27, r27
+ 480:	4a 30       	cpi	r20, 0x0A	; 10
+ 482:	31 f4       	brne	.+12     	; 0x490 <__itoa_ncheck+0x12>
+ 484:	99 23       	and	r25, r25
+ 486:	22 f4       	brpl	.+8      	; 0x490 <__itoa_ncheck+0x12>
+ 488:	bd e2       	ldi	r27, 0x2D	; 45
+ 48a:	90 95       	com	r25
+ 48c:	81 95       	neg	r24
+ 48e:	9f 4f       	sbci	r25, 0xFF	; 255
+ 490:	01 c0       	rjmp	.+2      	; 0x494 <__utoa_common>
 
-00000498 <__utoa_ncheck>:
- 498:	bb 27       	eor	r27, r27
+00000492 <__utoa_ncheck>:
+ 492:	bb 27       	eor	r27, r27
 
-0000049a <__utoa_common>:
- 49a:	fb 01       	movw	r30, r22
- 49c:	55 27       	eor	r21, r21
- 49e:	aa 27       	eor	r26, r26
- 4a0:	88 0f       	add	r24, r24
- 4a2:	99 1f       	adc	r25, r25
- 4a4:	aa 1f       	adc	r26, r26
- 4a6:	a4 17       	cp	r26, r20
- 4a8:	10 f0       	brcs	.+4      	; 0x4ae <__utoa_common+0x14>
- 4aa:	a4 1b       	sub	r26, r20
- 4ac:	83 95       	inc	r24
- 4ae:	50 51       	subi	r21, 0x10	; 16
- 4b0:	b9 f7       	brne	.-18     	; 0x4a0 <__utoa_common+0x6>
- 4b2:	a0 5d       	subi	r26, 0xD0	; 208
- 4b4:	aa 33       	cpi	r26, 0x3A	; 58
- 4b6:	08 f0       	brcs	.+2      	; 0x4ba <__utoa_common+0x20>
- 4b8:	a9 5d       	subi	r26, 0xD9	; 217
- 4ba:	a1 93       	st	Z+, r26
- 4bc:	00 97       	sbiw	r24, 0x00	; 0
- 4be:	79 f7       	brne	.-34     	; 0x49e <__utoa_common+0x4>
- 4c0:	b1 11       	cpse	r27, r1
- 4c2:	b1 93       	st	Z+, r27
- 4c4:	11 92       	st	Z+, r1
- 4c6:	cb 01       	movw	r24, r22
- 4c8:	00 c0       	rjmp	.+0      	; 0x4ca <strrev>
+00000494 <__utoa_common>:
+ 494:	fb 01       	movw	r30, r22
+ 496:	55 27       	eor	r21, r21
+ 498:	aa 27       	eor	r26, r26
+ 49a:	88 0f       	add	r24, r24
+ 49c:	99 1f       	adc	r25, r25
+ 49e:	aa 1f       	adc	r26, r26
+ 4a0:	a4 17       	cp	r26, r20
+ 4a2:	10 f0       	brcs	.+4      	; 0x4a8 <__utoa_common+0x14>
+ 4a4:	a4 1b       	sub	r26, r20
+ 4a6:	83 95       	inc	r24
+ 4a8:	50 51       	subi	r21, 0x10	; 16
+ 4aa:	b9 f7       	brne	.-18     	; 0x49a <__utoa_common+0x6>
+ 4ac:	a0 5d       	subi	r26, 0xD0	; 208
+ 4ae:	aa 33       	cpi	r26, 0x3A	; 58
+ 4b0:	08 f0       	brcs	.+2      	; 0x4b4 <__utoa_common+0x20>
+ 4b2:	a9 5d       	subi	r26, 0xD9	; 217
+ 4b4:	a1 93       	st	Z+, r26
+ 4b6:	00 97       	sbiw	r24, 0x00	; 0
+ 4b8:	79 f7       	brne	.-34     	; 0x498 <__utoa_common+0x4>
+ 4ba:	b1 11       	cpse	r27, r1
+ 4bc:	b1 93       	st	Z+, r27
+ 4be:	11 92       	st	Z+, r1
+ 4c0:	cb 01       	movw	r24, r22
+ 4c2:	00 c0       	rjmp	.+0      	; 0x4c4 <strrev>
 
-000004ca <strrev>:
- 4ca:	dc 01       	movw	r26, r24
- 4cc:	fc 01       	movw	r30, r24
- 4ce:	67 2f       	mov	r22, r23
- 4d0:	71 91       	ld	r23, Z+
- 4d2:	77 23       	and	r23, r23
- 4d4:	e1 f7       	brne	.-8      	; 0x4ce <strrev+0x4>
- 4d6:	32 97       	sbiw	r30, 0x02	; 2
- 4d8:	04 c0       	rjmp	.+8      	; 0x4e2 <strrev+0x18>
- 4da:	7c 91       	ld	r23, X
- 4dc:	6d 93       	st	X+, r22
- 4de:	70 83       	st	Z, r23
- 4e0:	62 91       	ld	r22, -Z
- 4e2:	ae 17       	cp	r26, r30
- 4e4:	bf 07       	cpc	r27, r31
- 4e6:	c8 f3       	brcs	.-14     	; 0x4da <strrev+0x10>
- 4e8:	08 95       	ret
+000004c4 <strrev>:
+ 4c4:	dc 01       	movw	r26, r24
+ 4c6:	fc 01       	movw	r30, r24
+ 4c8:	67 2f       	mov	r22, r23
+ 4ca:	71 91       	ld	r23, Z+
+ 4cc:	77 23       	and	r23, r23
+ 4ce:	e1 f7       	brne	.-8      	; 0x4c8 <strrev+0x4>
+ 4d0:	32 97       	sbiw	r30, 0x02	; 2
+ 4d2:	04 c0       	rjmp	.+8      	; 0x4dc <strrev+0x18>
+ 4d4:	7c 91       	ld	r23, X
+ 4d6:	6d 93       	st	X+, r22
+ 4d8:	70 83       	st	Z, r23
+ 4da:	62 91       	ld	r22, -Z
+ 4dc:	ae 17       	cp	r26, r30
+ 4de:	bf 07       	cpc	r27, r31
+ 4e0:	c8 f3       	brcs	.-14     	; 0x4d4 <strrev+0x10>
+ 4e2:	08 95       	ret
 
-000004ea <_exit>:
- 4ea:	f8 94       	cli
+000004e4 <_exit>:
+ 4e4:	f8 94       	cli
 
-000004ec <__stop_program>:
- 4ec:	ff cf       	rjmp	.-2      	; 0x4ec <__stop_program>
+000004e6 <__stop_program>:
+ 4e6:	ff cf       	rjmp	.-2      	; 0x4e6 <__stop_program>
