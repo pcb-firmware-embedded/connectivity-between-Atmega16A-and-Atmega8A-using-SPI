@@ -1,7 +1,7 @@
 /*
  * ATmega16A SPI Master
- * Bidirectional communication with ATmega8A
- * 4x4 keypad + LCD 16x2
+ * Bidirectional number communication with ATmega8A
+ * 4x4 keypad + 16x2 LCD
  * Atmel Studio 6 / AVR-GCC
  */
 
@@ -13,7 +13,7 @@
 #include <stdlib.h>
 
 /* =========================================================
-   LCD CONNECTIONS — ATmega16A PORTC
+   LCD — PORTC
 
    RS -> PC0
    EN -> PC1
@@ -35,17 +35,10 @@
 #define LCD_D7 PC7
 
 /* =========================================================
-   4x4 KEYPAD — ATmega16A PORTA
+   KEYPAD — PORTA
 
-   R1 -> PA0
-   R2 -> PA1
-   R3 -> PA2
-   R4 -> PA3
-
-   C1 -> PA4
-   C2 -> PA5
-   C3 -> PA6
-   C4 -> PA7
+   R1-R4 -> PA0-PA3
+   C1-C4 -> PA4-PA7
    ========================================================= */
 
 #define KEYPAD_PORT PORTA
@@ -53,7 +46,7 @@
 #define KEYPAD_PIN  PINA
 
 /* =========================================================
-   SPI — ATmega16A
+   SPI — PORTB
 
    PB4 -> SS
    PB5 -> MOSI
@@ -66,8 +59,9 @@
 #define SPI_MISO PB6
 #define SPI_SCK  PB7
 
-#define FRAME_HEADER 0xA5
-#define FRAME_SIZE   4
+#define PREPARE_COMMAND 0x5A
+#define FRAME_HEADER    0xA5
+#define FRAME_SIZE      4
 
 /* =========================================================
    LCD FUNCTIONS
@@ -189,15 +183,9 @@ static void LCD_PrintNumber(uint16_t number)
 {
     char buffer[6];
 
-    /*
-     * Maximum value in this project is 9999.
-     */
     itoa((int)number, buffer, 10);
     LCD_Print(buffer);
 
-    /*
-     * Clear the remaining positions so old digits disappear.
-     */
     if (number < 1000)
         LCD_Character(' ');
 
@@ -222,10 +210,7 @@ static const char keypadMap[4][4] =
 
 static void Keypad_Init(void)
 {
-    /*
-     * PA0–PA3: output rows.
-     * PA4–PA7: input columns with pull-ups.
-     */
+    /* PA0-PA3 outputs; PA4-PA7 inputs with pull-ups */
     KEYPAD_DDR = 0x0F;
     KEYPAD_PORT = 0xFF;
 }
@@ -237,14 +222,10 @@ static char Keypad_ScanRaw(void)
 
     for (row = 0; row < 4; row++)
     {
-        /*
-         * Set all rows HIGH.
-         */
+        /* All rows HIGH */
         KEYPAD_PORT |= 0x0F;
 
-        /*
-         * Drive one selected row LOW.
-         */
+        /* Selected row LOW */
         KEYPAD_PORT &= ~(1 << row);
 
         _delay_us(5);
@@ -261,9 +242,7 @@ static char Keypad_ScanRaw(void)
 
 static char Keypad_GetKey(void)
 {
-    char key;
-
-    key = Keypad_ScanRaw();
+    char key = Keypad_ScanRaw();
 
     if (key != 0)
     {
@@ -332,9 +311,6 @@ static void ProcessKey(
     }
     else if (key == '#')
     {
-        /*
-         * Confirm the number that will be transmitted.
-         */
         *confirmedNumber = *inputNumber;
     }
 }
@@ -367,34 +343,24 @@ static void BuildFrame(uint16_t number, uint8_t *frame)
 
 static void SPI_MasterInit(void)
 {
-    /*
-     * SS, MOSI and SCK outputs.
-     */
+    /* SS, MOSI and SCK outputs */
     DDRB |=
         (1 << SPI_SS) |
         (1 << SPI_MOSI) |
         (1 << SPI_SCK);
 
-    /*
-     * MISO input.
-     */
+    /* MISO input */
     DDRB &= ~(1 << SPI_MISO);
 
-    /*
-     * Keep slave deselected initially.
-     */
+    /* Deselect slave */
     PORTB |= (1 << SPI_SS);
 
     /*
-     * SPI enabled.
-     * Master mode.
-     * Mode 0: CPOL = 0, CPHA = 0.
-     * Clock = F_CPU / 128.
-     *
-     * At 8 MHz:
-     * SPI clock = 62.5 kHz.
-     *
-     * This slower speed is reliable in Proteus.
+     * SPI enabled
+     * Master mode
+     * Mode 0
+     * MSB first
+     * F_CPU / 128 = 62.5 kHz
      */
     SPCR =
         (1 << SPE) |
@@ -411,80 +377,81 @@ static uint8_t SPI_TransferByte(uint8_t transmitByte)
 
     while (!(SPSR & (1 << SPIF)))
     {
-        /*
-         * Wait for transfer completion.
-         */
+        /* Wait for transfer completion */
     }
 
+    /*
+     * SPDR now contains the byte received through MISO.
+     */
     return SPDR;
 }
 
 /*
- * Sends the ATmega16A number and simultaneously receives
- * the ATmega8A number.
+ * Sends ATmega16A number and receives ATmega8A number.
  *
- * Returns:
- * 1 = valid frame received
- * 0 = invalid frame
+ * Return:
+ * 1 = valid ATmega8A number received
+ * 0 = invalid response
  */
 static uint8_t SPI_ExchangeNumbers(
-    uint16_t masterNumber,
-    uint16_t *slaveNumber
+    uint16_t numberToATmega8,
+    uint16_t *numberFromATmega8
 )
 {
-    uint8_t txFrame[FRAME_SIZE];
-    uint8_t rxFrame[FRAME_SIZE];
-
+    uint8_t transmitFrame[FRAME_SIZE];
+    uint8_t receiveFrame[FRAME_SIZE];
     uint8_t expectedChecksum;
     uint8_t i;
 
-    BuildFrame(masterNumber, txFrame);
+    BuildFrame(numberToATmega8, transmitFrame);
 
-    /*
-     * Start a new SPI transaction.
-     *
-     * The falling SS edge causes INT2 on the ATmega8A.
-     */
+    /* Select ATmega8A */
     PORTB &= ~(1 << SPI_SS);
+    _delay_us(20);
 
     /*
-     * Allow the ATmega8A INT2 ISR to reset its indexes
-     * and preload the first response byte.
+     * First transfer prepares the slave response.
+     * Ignore the byte returned during this transfer.
+     */
+    (void)SPI_TransferByte(PREPARE_COMMAND);
+
+    /*
+     * Give the ATmega8A ISR time to load its header.
      */
     _delay_us(100);
 
+    /*
+     * Exchange four-byte frames.
+     */
     for (i = 0; i < FRAME_SIZE; i++)
     {
-        rxFrame[i] =
-            SPI_TransferByte(txFrame[i]);
+        receiveFrame[i] =
+            SPI_TransferByte(transmitFrame[i]);
 
-        /*
-         * Allow the ATmega8A SPI ISR to preload the next byte.
-         */
         _delay_us(50);
     }
 
-    /*
-     * End the transaction.
-     */
+    /* Deselect ATmega8A */
     PORTB |= (1 << SPI_SS);
-
-    _delay_us(100);
+    _delay_us(20);
 
     expectedChecksum = CalculateChecksum(
-        rxFrame[0],
-        rxFrame[1],
-        rxFrame[2]
+        receiveFrame[0],
+        receiveFrame[1],
+        receiveFrame[2]
     );
 
     if (
-        (rxFrame[0] == FRAME_HEADER) &&
-        (rxFrame[3] == expectedChecksum)
+        (receiveFrame[0] == FRAME_HEADER) &&
+        (receiveFrame[3] == expectedChecksum)
     )
     {
-        *slaveNumber =
-            ((uint16_t)rxFrame[1] << 8) |
-            (uint16_t)rxFrame[2];
+        /*
+         * This is the explicit ATmega8A receive operation.
+         */
+        *numberFromATmega8 =
+            ((uint16_t)receiveFrame[1] << 8) |
+            (uint16_t)receiveFrame[2];
 
         return 1;
     }
@@ -531,10 +498,8 @@ int main(void)
         }
 
         /*
-         * The master continuously generates SPI transactions.
-         *
-         * If a frame is invalid, numberFromATmega8 keeps the
-         * last successfully received value.
+         * Send confirmedNumber to ATmega8A and receive
+         * numberFromATmega8 through MISO.
          */
         SPI_ExchangeNumbers(
             confirmedNumber,
