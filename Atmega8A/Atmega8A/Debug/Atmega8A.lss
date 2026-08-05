@@ -3,29 +3,29 @@ Atmega8A.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000004e8  00000000  00000000  00000094  2**1
+  0 .text         000004e2  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         0000001a  00800060  000004e8  0000057c  2**0
+  1 .data         0000001a  00800060  000004e2  00000576  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000000d  0080007a  0080007a  00000596  2**0
+  2 .bss          0000000d  0080007a  0080007a  00000590  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000596  2**0
+  3 .comment      00000030  00000000  00000000  00000590  2**0
                   CONTENTS, READONLY
-  4 .debug_aranges 00000060  00000000  00000000  000005c6  2**0
+  4 .debug_aranges 00000060  00000000  00000000  000005c0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000d9b  00000000  00000000  00000626  2**0
+  5 .debug_info   00000d6f  00000000  00000000  00000620  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000386  00000000  00000000  000013c1  2**0
+  6 .debug_abbrev 00000357  00000000  00000000  0000138f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000033a  00000000  00000000  00001747  2**0
+  7 .debug_line   00000336  00000000  00000000  000016e6  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000013c  00000000  00000000  00001a84  2**2
+  8 .debug_frame  0000013c  00000000  00000000  00001a1c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000427  00000000  00000000  00001bc0  2**0
+  9 .debug_str    00000421  00000000  00000000  00001b58  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000008d8  00000000  00000000  00001fe7  2**0
+ 10 .debug_loc    000008c3  00000000  00000000  00001f79  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000070  00000000  00000000  000028bf  2**0
+ 11 .debug_ranges 00000070  00000000  00000000  0000283c  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -41,7 +41,7 @@ Disassembly of section .text:
    e:	26 c0       	rjmp	.+76     	; 0x5c <__bad_interrupt>
   10:	25 c0       	rjmp	.+74     	; 0x5c <__bad_interrupt>
   12:	24 c0       	rjmp	.+72     	; 0x5c <__bad_interrupt>
-  14:	fe c0       	rjmp	.+508    	; 0x212 <__vector_10>
+  14:	f7 c0       	rjmp	.+494    	; 0x204 <__vector_10>
   16:	22 c0       	rjmp	.+68     	; 0x5c <__bad_interrupt>
   18:	21 c0       	rjmp	.+66     	; 0x5c <__bad_interrupt>
   1a:	20 c0       	rjmp	.+64     	; 0x5c <__bad_interrupt>
@@ -63,7 +63,7 @@ Disassembly of section .text:
   32:	10 e0       	ldi	r17, 0x00	; 0
   34:	a0 e6       	ldi	r26, 0x60	; 96
   36:	b0 e0       	ldi	r27, 0x00	; 0
-  38:	e8 ee       	ldi	r30, 0xE8	; 232
+  38:	e2 ee       	ldi	r30, 0xE2	; 226
   3a:	f4 e0       	ldi	r31, 0x04	; 4
   3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
   3e:	05 90       	lpm	r0, Z+
@@ -85,8 +85,8 @@ Disassembly of section .text:
   52:	a7 38       	cpi	r26, 0x87	; 135
   54:	b2 07       	cpc	r27, r18
   56:	e1 f7       	brne	.-8      	; 0x50 <.do_clear_bss_loop>
-  58:	36 d1       	rcall	.+620    	; 0x2c6 <main>
-  5a:	44 c2       	rjmp	.+1160   	; 0x4e4 <_exit>
+  58:	33 d1       	rcall	.+614    	; 0x2c0 <main>
+  5a:	41 c2       	rjmp	.+1154   	; 0x4de <_exit>
 
 0000005c <__bad_interrupt>:
   5c:	d1 cf       	rjmp	.-94     	; 0x0 <__vectors>
@@ -210,11 +210,11 @@ static void LCD_EnablePulse(void)
     LCD_EnablePulse();
 }
 
-static void LCD_SendByte(uint8_t value, uint8_t dataMode)
+static void LCD_SendByte(uint8_t value, uint8_t isData)
 {
   ba:	cf 93       	push	r28
   bc:	c8 2f       	mov	r28, r24
-    if (dataMode)
+    if (isData)
   be:	66 23       	and	r22, r22
   c0:	11 f0       	breq	.+4      	; 0xc6 <LCD_SendByte+0xc>
         LCD_PORT |= (1 << LCD_RS);
@@ -319,7 +319,7 @@ static void LCD_Command(uint8_t command)
  11c:	08 95       	ret
 
 0000011e <Keypad_ScanRaw>:
-    KEYPAD_DDR = 0x0F;
+     */
     KEYPAD_PORT = 0xFF;
 }
 
@@ -329,23 +329,27 @@ static char Keypad_ScanRaw(void)
  120:	df 93       	push	r29
  122:	60 e0       	ldi	r22, 0x00	; 0
  124:	70 e0       	ldi	r23, 0x00	; 0
-    uint8_t column;
-
-    for (row = 0; row < 4; row++)
-    {
         KEYPAD_PORT |= 0x0F;
+
+        /*
+         * Drive one selected row LOW.
+         */
         KEYPAD_PORT &= ~(1 << row);
  126:	a1 e0       	ldi	r26, 0x01	; 1
  128:	b0 e0       	ldi	r27, 0x00	; 0
-    uint8_t row;
-    uint8_t column;
-
     for (row = 0; row < 4; row++)
     {
+        /*
+         * Set all rows HIGH.
+         */
         KEYPAD_PORT |= 0x0F;
  12a:	82 b3       	in	r24, 0x12	; 18
  12c:	8f 60       	ori	r24, 0x0F	; 15
  12e:	82 bb       	out	0x12, r24	; 18
+
+        /*
+         * Drive one selected row LOW.
+         */
         KEYPAD_PORT &= ~(1 << row);
  130:	22 b3       	in	r18, 0x12	; 18
  132:	eb 01       	movw	r28, r22
@@ -394,6 +398,7 @@ static char Keypad_ScanRaw(void)
  170:	02 c0       	rjmp	.+4      	; 0x176 <Keypad_ScanRaw+0x58>
  172:	e0 e0       	ldi	r30, 0x00	; 0
  174:	f0 e0       	ldi	r31, 0x00	; 0
+            {
                 return keypadMap[row][column];
  176:	cc 0f       	add	r28, r28
  178:	dd 1f       	adc	r29, r29
@@ -406,7 +411,7 @@ static char Keypad_ScanRaw(void)
  186:	80 81       	ld	r24, Z
  188:	0a c0       	rjmp	.+20     	; 0x19e <Keypad_ScanRaw+0x80>
  18a:	01 96       	adiw	r24, 0x01	; 1
-        KEYPAD_PORT |= 0x0F;
+         */
         KEYPAD_PORT &= ~(1 << row);
 
         _delay_us(5);
@@ -426,8 +431,8 @@ static char Keypad_ScanRaw(void)
  196:	64 30       	cpi	r22, 0x04	; 4
  198:	71 05       	cpc	r23, r1
  19a:	39 f6       	brne	.-114    	; 0x12a <Keypad_ScanRaw+0xc>
-            if (!(KEYPAD_PIN & (1 << (column + 4))))
                 return keypadMap[row][column];
+            }
         }
     }
 
@@ -465,7 +470,7 @@ static void LCD_PrintNumber(uint16_t number)
  1ba:	be 01       	movw	r22, r28
  1bc:	6f 5f       	subi	r22, 0xFF	; 255
  1be:	7f 4f       	sbci	r23, 0xFF	; 255
- 1c0:	5e d1       	rcall	.+700    	; 0x47e <__itoa_ncheck>
+ 1c0:	5b d1       	rcall	.+694    	; 0x478 <__itoa_ncheck>
     char buffer[6];
 
     itoa((int)number, buffer, 10);
@@ -474,9 +479,13 @@ static void LCD_PrintNumber(uint16_t number)
  1c4:	01 96       	adiw	r24, 0x01	; 1
  1c6:	8d df       	rcall	.-230    	; 0xe2 <LCD_Print>
 
-    if (number < 10000)
- 1c8:	00 31       	cpi	r16, 0x10	; 16
- 1ca:	87 e2       	ldi	r24, 0x27	; 39
+    /*
+     * Clear unused positions so old digits disappear.
+     * Four LCD positions are used for numbers 0–9999.
+     */
+    if (number < 1000)
+ 1c8:	08 3e       	cpi	r16, 0xE8	; 232
+ 1ca:	83 e0       	ldi	r24, 0x03	; 3
  1cc:	18 07       	cpc	r17, r24
  1ce:	18 f4       	brcc	.+6      	; 0x1d6 <LCD_PrintNumber+0x32>
         _delay_ms(2);
@@ -488,813 +497,824 @@ static void LCD_Character(char character)
  1d0:	61 e0       	ldi	r22, 0x01	; 1
  1d2:	80 e2       	ldi	r24, 0x20	; 32
  1d4:	72 df       	rcall	.-284    	; 0xba <LCD_SendByte>
-    LCD_Print(buffer);
-
-    if (number < 10000)
-        LCD_Character(' ');
-
-    if (number < 1000)
- 1d6:	08 3e       	cpi	r16, 0xE8	; 232
- 1d8:	83 e0       	ldi	r24, 0x03	; 3
- 1da:	18 07       	cpc	r17, r24
- 1dc:	18 f4       	brcc	.+6      	; 0x1e4 <LCD_PrintNumber+0x40>
-        _delay_ms(2);
-}
-
-static void LCD_Character(char character)
-{
-    LCD_SendByte((uint8_t)character, 1);
- 1de:	61 e0       	ldi	r22, 0x01	; 1
- 1e0:	80 e2       	ldi	r24, 0x20	; 32
- 1e2:	6b df       	rcall	.-298    	; 0xba <LCD_SendByte>
-        LCD_Character(' ');
-
+     * Four LCD positions are used for numbers 0–9999.
+     */
     if (number < 1000)
         LCD_Character(' ');
 
     if (number < 100)
- 1e4:	04 36       	cpi	r16, 0x64	; 100
- 1e6:	11 05       	cpc	r17, r1
- 1e8:	18 f4       	brcc	.+6      	; 0x1f0 <LCD_PrintNumber+0x4c>
+ 1d6:	04 36       	cpi	r16, 0x64	; 100
+ 1d8:	11 05       	cpc	r17, r1
+ 1da:	18 f4       	brcc	.+6      	; 0x1e2 <LCD_PrintNumber+0x3e>
         _delay_ms(2);
 }
 
 static void LCD_Character(char character)
 {
     LCD_SendByte((uint8_t)character, 1);
- 1ea:	61 e0       	ldi	r22, 0x01	; 1
- 1ec:	80 e2       	ldi	r24, 0x20	; 32
- 1ee:	65 df       	rcall	.-310    	; 0xba <LCD_SendByte>
+ 1dc:	61 e0       	ldi	r22, 0x01	; 1
+ 1de:	80 e2       	ldi	r24, 0x20	; 32
+ 1e0:	6c df       	rcall	.-296    	; 0xba <LCD_SendByte>
         LCD_Character(' ');
 
     if (number < 100)
         LCD_Character(' ');
 
     if (number < 10)
- 1f0:	0a 30       	cpi	r16, 0x0A	; 10
- 1f2:	11 05       	cpc	r17, r1
- 1f4:	18 f4       	brcc	.+6      	; 0x1fc <LCD_PrintNumber+0x58>
+ 1e2:	0a 30       	cpi	r16, 0x0A	; 10
+ 1e4:	11 05       	cpc	r17, r1
+ 1e6:	18 f4       	brcc	.+6      	; 0x1ee <LCD_PrintNumber+0x4a>
         _delay_ms(2);
 }
 
 static void LCD_Character(char character)
 {
     LCD_SendByte((uint8_t)character, 1);
- 1f6:	61 e0       	ldi	r22, 0x01	; 1
- 1f8:	80 e2       	ldi	r24, 0x20	; 32
- 1fa:	5f df       	rcall	.-322    	; 0xba <LCD_SendByte>
+ 1e8:	61 e0       	ldi	r22, 0x01	; 1
+ 1ea:	80 e2       	ldi	r24, 0x20	; 32
+ 1ec:	66 df       	rcall	.-308    	; 0xba <LCD_SendByte>
     if (number < 100)
         LCD_Character(' ');
 
     if (number < 10)
         LCD_Character(' ');
 }
- 1fc:	26 96       	adiw	r28, 0x06	; 6
- 1fe:	0f b6       	in	r0, 0x3f	; 63
- 200:	f8 94       	cli
- 202:	de bf       	out	0x3e, r29	; 62
- 204:	0f be       	out	0x3f, r0	; 63
- 206:	cd bf       	out	0x3d, r28	; 61
- 208:	df 91       	pop	r29
- 20a:	cf 91       	pop	r28
- 20c:	1f 91       	pop	r17
- 20e:	0f 91       	pop	r16
- 210:	08 95       	ret
+ 1ee:	26 96       	adiw	r28, 0x06	; 6
+ 1f0:	0f b6       	in	r0, 0x3f	; 63
+ 1f2:	f8 94       	cli
+ 1f4:	de bf       	out	0x3e, r29	; 62
+ 1f6:	0f be       	out	0x3f, r0	; 63
+ 1f8:	cd bf       	out	0x3d, r28	; 61
+ 1fa:	df 91       	pop	r29
+ 1fc:	cf 91       	pop	r28
+ 1fe:	1f 91       	pop	r17
+ 200:	0f 91       	pop	r16
+ 202:	08 95       	ret
 
-00000212 <__vector_10>:
- *
- * Important:
- * Only this ISR writes new transfer data to SPDR.
- */
+00000204 <__vector_10>:
+   - stores it,
+   - loads its next response byte into SPDR.
+   ========================================================= */
+
 ISR(SPI_STC_vect)
 {
- 212:	1f 92       	push	r1
- 214:	0f 92       	push	r0
- 216:	0f b6       	in	r0, 0x3f	; 63
- 218:	0f 92       	push	r0
- 21a:	11 24       	eor	r1, r1
- 21c:	2f 93       	push	r18
- 21e:	3f 93       	push	r19
- 220:	4f 93       	push	r20
- 222:	5f 93       	push	r21
- 224:	6f 93       	push	r22
- 226:	7f 93       	push	r23
- 228:	8f 93       	push	r24
- 22a:	9f 93       	push	r25
- 22c:	af 93       	push	r26
- 22e:	bf 93       	push	r27
- 230:	ef 93       	push	r30
- 232:	ff 93       	push	r31
-    uint16_t localNumberSnapshot;
+ 204:	1f 92       	push	r1
+ 206:	0f 92       	push	r0
+ 208:	0f b6       	in	r0, 0x3f	; 63
+ 20a:	0f 92       	push	r0
+ 20c:	11 24       	eor	r1, r1
+ 20e:	2f 93       	push	r18
+ 210:	3f 93       	push	r19
+ 212:	4f 93       	push	r20
+ 214:	5f 93       	push	r21
+ 216:	6f 93       	push	r22
+ 218:	7f 93       	push	r23
+ 21a:	8f 93       	push	r24
+ 21c:	9f 93       	push	r25
+ 21e:	af 93       	push	r26
+ 220:	bf 93       	push	r27
+ 222:	ef 93       	push	r30
+ 224:	ff 93       	push	r31
+    uint16_t localNumberCopy;
 
     /*
-     * Read the byte received from ATmega16A.
+     * Reading SPDR retrieves the byte sent by ATmega16A.
      */
     receivedByte = SPDR;
- 234:	8f b1       	in	r24, 0x0f	; 15
+ 226:	8f b1       	in	r24, 0x0f	; 15
 
     receiveFrame[spiIndex] = receivedByte;
- 236:	e0 91 7a 00 	lds	r30, 0x007A
- 23a:	f0 e0       	ldi	r31, 0x00	; 0
- 23c:	e1 58       	subi	r30, 0x81	; 129
- 23e:	ff 4f       	sbci	r31, 0xFF	; 255
- 240:	80 83       	st	Z, r24
+ 228:	e0 91 7a 00 	lds	r30, 0x007A
+ 22c:	f0 e0       	ldi	r31, 0x00	; 0
+ 22e:	e1 58       	subi	r30, 0x81	; 129
+ 230:	ff 4f       	sbci	r31, 0xFF	; 255
+ 232:	80 83       	st	Z, r24
 
     spiIndex++;
- 242:	80 91 7a 00 	lds	r24, 0x007A
- 246:	8f 5f       	subi	r24, 0xFF	; 255
- 248:	80 93 7a 00 	sts	0x007A, r24
+ 234:	80 91 7a 00 	lds	r24, 0x007A
+ 238:	8f 5f       	subi	r24, 0xFF	; 255
+ 23a:	80 93 7a 00 	sts	0x007A, r24
 
     if (spiIndex >= FRAME_SIZE)
- 24c:	80 91 7a 00 	lds	r24, 0x007A
- 250:	84 30       	cpi	r24, 0x04	; 4
- 252:	08 f1       	brcs	.+66     	; 0x296 <__vector_10+0x84>
+ 23e:	80 91 7a 00 	lds	r24, 0x007A
+ 242:	84 30       	cpi	r24, 0x04	; 4
+ 244:	28 f1       	brcs	.+74     	; 0x290 <__vector_10+0x8c>
     {
         /*
-         * Complete four-byte frame received.
+         * A complete four-byte frame has been received.
          */
         expectedChecksum = CalculateChecksum(
- 254:	20 91 81 00 	lds	r18, 0x0081
- 258:	30 91 80 00 	lds	r19, 0x0080
- 25c:	ef e7       	ldi	r30, 0x7F	; 127
- 25e:	f0 e0       	ldi	r31, 0x00	; 0
- 260:	90 81       	ld	r25, Z
+ 246:	20 91 81 00 	lds	r18, 0x0081
+ 24a:	30 91 80 00 	lds	r19, 0x0080
+ 24e:	ef e7       	ldi	r30, 0x7F	; 127
+ 250:	f0 e0       	ldi	r31, 0x00	; 0
+ 252:	90 81       	ld	r25, Z
             receiveFrame[1],
             receiveFrame[2]
         );
 
         if (
             (receiveFrame[0] == FRAME_HEADER) &&
- 262:	80 81       	ld	r24, Z
+ 254:	80 81       	ld	r24, Z
             receiveFrame[0],
             receiveFrame[1],
             receiveFrame[2]
         );
 
         if (
- 264:	85 3a       	cpi	r24, 0xA5	; 165
- 266:	81 f4       	brne	.+32     	; 0x288 <__vector_10+0x76>
+ 256:	85 3a       	cpi	r24, 0xA5	; 165
+ 258:	81 f4       	brne	.+32     	; 0x27a <__vector_10+0x76>
             (receiveFrame[0] == FRAME_HEADER) &&
             (receiveFrame[3] == expectedChecksum)
- 268:	80 91 82 00 	lds	r24, 0x0082
+ 25a:	80 91 82 00 	lds	r24, 0x0082
     uint8_t header,
     uint8_t highByte,
     uint8_t lowByte
 )
 {
     return header ^ highByte ^ lowByte;
- 26c:	23 27       	eor	r18, r19
- 26e:	92 27       	eor	r25, r18
+ 25e:	23 27       	eor	r18, r19
+ 260:	92 27       	eor	r25, r18
             receiveFrame[1],
             receiveFrame[2]
         );
 
         if (
             (receiveFrame[0] == FRAME_HEADER) &&
- 270:	89 13       	cpse	r24, r25
- 272:	0a c0       	rjmp	.+20     	; 0x288 <__vector_10+0x76>
+ 262:	89 13       	cpse	r24, r25
+ 264:	0a c0       	rjmp	.+20     	; 0x27a <__vector_10+0x76>
             (receiveFrame[3] == expectedChecksum)
         )
         {
             numberFromATmega16 =
                 ((uint16_t)receiveFrame[1] << 8) |
- 274:	20 91 80 00 	lds	r18, 0x0080
+ 266:	20 91 80 00 	lds	r18, 0x0080
                 (uint16_t)receiveFrame[2];
- 278:	80 91 81 00 	lds	r24, 0x0081
+ 26a:	80 91 81 00 	lds	r24, 0x0081
             (receiveFrame[0] == FRAME_HEADER) &&
             (receiveFrame[3] == expectedChecksum)
         )
         {
             numberFromATmega16 =
                 ((uint16_t)receiveFrame[1] << 8) |
- 27c:	90 e0       	ldi	r25, 0x00	; 0
- 27e:	92 2b       	or	r25, r18
+ 26e:	90 e0       	ldi	r25, 0x00	; 0
+ 270:	92 2b       	or	r25, r18
         if (
             (receiveFrame[0] == FRAME_HEADER) &&
             (receiveFrame[3] == expectedChecksum)
         )
         {
             numberFromATmega16 =
- 280:	90 93 84 00 	sts	0x0084, r25
- 284:	80 93 83 00 	sts	0x0083, r24
-        }
+ 272:	90 93 84 00 	sts	0x0084, r25
+ 276:	80 93 83 00 	sts	0x0083, r24
 
         /*
-         * Snapshot the newest confirmed ATmega8A number.
+         * Prepare the latest confirmed ATmega8A number
+         * for the next complete transaction.
          */
-        localNumberSnapshot = confirmedNumber;
- 288:	80 91 85 00 	lds	r24, 0x0085
- 28c:	90 91 86 00 	lds	r25, 0x0086
+        localNumberCopy = confirmedNumber;
+ 27a:	80 91 85 00 	lds	r24, 0x0085
+ 27e:	90 91 86 00 	lds	r25, 0x0086
+        BuildTransmitFrame(localNumberCopy);
+ 282:	ed de       	rcall	.-550    	; 0x5e <BuildTransmitFrame>
 
         /*
-         * Prepare response for the next transaction.
+         * Restart the frame index.
          */
-        BuildTransmitFrame(localNumberSnapshot);
- 290:	e6 de       	rcall	.-564    	; 0x5e <BuildTransmitFrame>
-
         spiIndex = 0;
- 292:	10 92 7a 00 	sts	0x007A, r1
-     * Preload the next response byte.
-     *
-     * After the final byte, this loads byte zero for the
-     * next complete SPI transaction.
-     */
-    SPDR = transmitFrame[spiIndex];
- 296:	e0 91 7a 00 	lds	r30, 0x007A
- 29a:	f0 e0       	ldi	r31, 0x00	; 0
- 29c:	e5 58       	subi	r30, 0x85	; 133
- 29e:	ff 4f       	sbci	r31, 0xFF	; 255
- 2a0:	80 81       	ld	r24, Z
- 2a2:	8f b9       	out	0x0f, r24	; 15
-}
- 2a4:	ff 91       	pop	r31
- 2a6:	ef 91       	pop	r30
- 2a8:	bf 91       	pop	r27
- 2aa:	af 91       	pop	r26
- 2ac:	9f 91       	pop	r25
- 2ae:	8f 91       	pop	r24
- 2b0:	7f 91       	pop	r23
- 2b2:	6f 91       	pop	r22
- 2b4:	5f 91       	pop	r21
- 2b6:	4f 91       	pop	r20
- 2b8:	3f 91       	pop	r19
- 2ba:	2f 91       	pop	r18
- 2bc:	0f 90       	pop	r0
- 2be:	0f be       	out	0x3f, r0	; 63
- 2c0:	0f 90       	pop	r0
- 2c2:	1f 90       	pop	r1
- 2c4:	18 95       	reti
+ 284:	10 92 7a 00 	sts	0x007A, r1
 
-000002c6 <main>:
+        /*
+         * Preload the first byte for the next transaction.
+         */
+        SPDR = transmitFrame[0];
+ 288:	80 91 7b 00 	lds	r24, 0x007B
+ 28c:	8f b9       	out	0x0f, r24	; 15
+ 28e:	07 c0       	rjmp	.+14     	; 0x29e <__vector_10+0x9a>
+    {
+        /*
+         * Preload the next response byte for the current
+         * transaction.
+         */
+        SPDR = transmitFrame[spiIndex];
+ 290:	e0 91 7a 00 	lds	r30, 0x007A
+ 294:	f0 e0       	ldi	r31, 0x00	; 0
+ 296:	e5 58       	subi	r30, 0x85	; 133
+ 298:	ff 4f       	sbci	r31, 0xFF	; 255
+ 29a:	80 81       	ld	r24, Z
+ 29c:	8f b9       	out	0x0f, r24	; 15
+    }
+}
+ 29e:	ff 91       	pop	r31
+ 2a0:	ef 91       	pop	r30
+ 2a2:	bf 91       	pop	r27
+ 2a4:	af 91       	pop	r26
+ 2a6:	9f 91       	pop	r25
+ 2a8:	8f 91       	pop	r24
+ 2aa:	7f 91       	pop	r23
+ 2ac:	6f 91       	pop	r22
+ 2ae:	5f 91       	pop	r21
+ 2b0:	4f 91       	pop	r20
+ 2b2:	3f 91       	pop	r19
+ 2b4:	2f 91       	pop	r18
+ 2b6:	0f 90       	pop	r0
+ 2b8:	0f be       	out	0x3f, r0	; 63
+ 2ba:	0f 90       	pop	r0
+ 2bc:	1f 90       	pop	r1
+ 2be:	18 95       	reti
+
+000002c0 <main>:
     LCD_SendByte((uint8_t)character, 1);
 }
 
 static void LCD_Init(void)
 {
     LCD_DDR |=
- 2c6:	84 b3       	in	r24, 0x14	; 20
- 2c8:	8f 63       	ori	r24, 0x3F	; 63
- 2ca:	84 bb       	out	0x14, r24	; 20
+ 2c0:	84 b3       	in	r24, 0x14	; 20
+ 2c2:	8f 63       	ori	r24, 0x3F	; 63
+ 2c4:	84 bb       	out	0x14, r24	; 20
         (1 << LCD_D4) |
         (1 << LCD_D5) |
         (1 << LCD_D6) |
         (1 << LCD_D7);
 
     LCD_PORT &= ~(
- 2cc:	85 b3       	in	r24, 0x15	; 21
- 2ce:	8c 7f       	andi	r24, 0xFC	; 252
- 2d0:	85 bb       	out	0x15, r24	; 21
+ 2c6:	85 b3       	in	r24, 0x15	; 21
+ 2c8:	8c 7f       	andi	r24, 0xFC	; 252
+ 2ca:	85 bb       	out	0x15, r24	; 21
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 2d2:	2f ef       	ldi	r18, 0xFF	; 255
- 2d4:	89 ef       	ldi	r24, 0xF9	; 249
- 2d6:	90 e0       	ldi	r25, 0x00	; 0
- 2d8:	21 50       	subi	r18, 0x01	; 1
- 2da:	80 40       	sbci	r24, 0x00	; 0
- 2dc:	90 40       	sbci	r25, 0x00	; 0
- 2de:	e1 f7       	brne	.-8      	; 0x2d8 <main+0x12>
- 2e0:	00 c0       	rjmp	.+0      	; 0x2e2 <main+0x1c>
- 2e2:	00 00       	nop
-        (1 << LCD_EN)
-    );
-
+ 2cc:	2f ef       	ldi	r18, 0xFF	; 255
+ 2ce:	89 ef       	ldi	r24, 0xF9	; 249
+ 2d0:	90 e0       	ldi	r25, 0x00	; 0
+ 2d2:	21 50       	subi	r18, 0x01	; 1
+ 2d4:	80 40       	sbci	r24, 0x00	; 0
+ 2d6:	90 40       	sbci	r25, 0x00	; 0
+ 2d8:	e1 f7       	brne	.-8      	; 0x2d2 <main+0x12>
+ 2da:	00 c0       	rjmp	.+0      	; 0x2dc <main+0x1c>
+ 2dc:	00 00       	nop
     _delay_ms(40);
 
+    /*
+     * HD44780 4-bit initialization.
+     */
     LCD_SendNibble(0x03);
- 2e4:	83 e0       	ldi	r24, 0x03	; 3
- 2e6:	d1 de       	rcall	.-606    	; 0x8a <LCD_SendNibble>
- 2e8:	8f e0       	ldi	r24, 0x0F	; 15
- 2ea:	97 e2       	ldi	r25, 0x27	; 39
- 2ec:	01 97       	sbiw	r24, 0x01	; 1
- 2ee:	f1 f7       	brne	.-4      	; 0x2ec <main+0x26>
- 2f0:	00 c0       	rjmp	.+0      	; 0x2f2 <main+0x2c>
- 2f2:	00 00       	nop
+ 2de:	83 e0       	ldi	r24, 0x03	; 3
+ 2e0:	d4 de       	rcall	.-600    	; 0x8a <LCD_SendNibble>
+ 2e2:	8f e0       	ldi	r24, 0x0F	; 15
+ 2e4:	97 e2       	ldi	r25, 0x27	; 39
+ 2e6:	01 97       	sbiw	r24, 0x01	; 1
+ 2e8:	f1 f7       	brne	.-4      	; 0x2e6 <main+0x26>
+ 2ea:	00 c0       	rjmp	.+0      	; 0x2ec <main+0x2c>
+ 2ec:	00 00       	nop
     _delay_ms(5);
 
     LCD_SendNibble(0x03);
- 2f4:	83 e0       	ldi	r24, 0x03	; 3
- 2f6:	c9 de       	rcall	.-622    	; 0x8a <LCD_SendNibble>
+ 2ee:	83 e0       	ldi	r24, 0x03	; 3
+ 2f0:	cc de       	rcall	.-616    	; 0x8a <LCD_SendNibble>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 2f8:	8b e2       	ldi	r24, 0x2B	; 43
- 2fa:	91 e0       	ldi	r25, 0x01	; 1
- 2fc:	01 97       	sbiw	r24, 0x01	; 1
- 2fe:	f1 f7       	brne	.-4      	; 0x2fc <main+0x36>
- 300:	00 c0       	rjmp	.+0      	; 0x302 <main+0x3c>
- 302:	00 00       	nop
+ 2f2:	8b e2       	ldi	r24, 0x2B	; 43
+ 2f4:	91 e0       	ldi	r25, 0x01	; 1
+ 2f6:	01 97       	sbiw	r24, 0x01	; 1
+ 2f8:	f1 f7       	brne	.-4      	; 0x2f6 <main+0x36>
+ 2fa:	00 c0       	rjmp	.+0      	; 0x2fc <main+0x3c>
+ 2fc:	00 00       	nop
     _delay_us(150);
 
     LCD_SendNibble(0x03);
- 304:	83 e0       	ldi	r24, 0x03	; 3
- 306:	c1 de       	rcall	.-638    	; 0x8a <LCD_SendNibble>
+ 2fe:	83 e0       	ldi	r24, 0x03	; 3
+ 300:	c4 de       	rcall	.-632    	; 0x8a <LCD_SendNibble>
     LCD_SendNibble(0x02);
- 308:	82 e0       	ldi	r24, 0x02	; 2
- 30a:	bf de       	rcall	.-642    	; 0x8a <LCD_SendNibble>
+ 302:	82 e0       	ldi	r24, 0x02	; 2
+ 304:	c2 de       	rcall	.-636    	; 0x8a <LCD_SendNibble>
 
-    LCD_Command(0x28);
- 30c:	88 e2       	ldi	r24, 0x28	; 40
- 30e:	f8 de       	rcall	.-528    	; 0x100 <LCD_Command>
-    LCD_Command(0x0C);
- 310:	8c e0       	ldi	r24, 0x0C	; 12
- 312:	f6 de       	rcall	.-532    	; 0x100 <LCD_Command>
-    LCD_Command(0x06);
- 314:	86 e0       	ldi	r24, 0x06	; 6
- 316:	f4 de       	rcall	.-536    	; 0x100 <LCD_Command>
-    LCD_Command(0x01);
- 318:	81 e0       	ldi	r24, 0x01	; 1
- 31a:	f2 de       	rcall	.-540    	; 0x100 <LCD_Command>
+    LCD_Command(0x28); /* 4-bit, 2-line display */
+ 306:	88 e2       	ldi	r24, 0x28	; 40
+ 308:	fb de       	rcall	.-522    	; 0x100 <LCD_Command>
+    LCD_Command(0x0C); /* Display ON, cursor OFF */
+ 30a:	8c e0       	ldi	r24, 0x0C	; 12
+ 30c:	f9 de       	rcall	.-526    	; 0x100 <LCD_Command>
+    LCD_Command(0x06); /* Cursor moves right */
+ 30e:	86 e0       	ldi	r24, 0x06	; 6
+ 310:	f7 de       	rcall	.-530    	; 0x100 <LCD_Command>
+    LCD_Command(0x01); /* Clear display */
+ 312:	81 e0       	ldi	r24, 0x01	; 1
+ 314:	f5 de       	rcall	.-534    	; 0x100 <LCD_Command>
 {
     /*
-     * PD0–PD3 are row outputs.
-     * PD4–PD7 are column inputs with pull-ups.
+     * PD0–PD3: row outputs.
+     * PD4–PD7: column inputs.
      */
     KEYPAD_DDR = 0x0F;
- 31c:	8f e0       	ldi	r24, 0x0F	; 15
- 31e:	81 bb       	out	0x11, r24	; 17
+ 316:	8f e0       	ldi	r24, 0x0F	; 15
+ 318:	81 bb       	out	0x11, r24	; 17
+
+    /*
+     * Rows initially HIGH.
+     * Internal pull-ups enabled on columns.
+     */
     KEYPAD_PORT = 0xFF;
- 320:	8f ef       	ldi	r24, 0xFF	; 255
- 322:	82 bb       	out	0x12, r24	; 18
+ 31a:	8f ef       	ldi	r24, 0xFF	; 255
+ 31c:	82 bb       	out	0x12, r24	; 18
      * PB3 = MOSI input
      * PB4 = MISO output
      * PB5 = SCK input
      */
 
     DDRB &= ~(
- 324:	87 b3       	in	r24, 0x17	; 23
- 326:	83 7d       	andi	r24, 0xD3	; 211
- 328:	87 bb       	out	0x17, r24	; 23
+ 31e:	87 b3       	in	r24, 0x17	; 23
+ 320:	83 7d       	andi	r24, 0xD3	; 211
+ 322:	87 bb       	out	0x17, r24	; 23
         (1 << PB2) |
         (1 << PB3) |
         (1 << PB5)
     );
 
     DDRB |= (1 << PB4);
- 32a:	bc 9a       	sbi	0x17, 4	; 23
+ 324:	bc 9a       	sbi	0x17, 4	; 23
 
     /*
      * Enable pull-up on SS.
      */
     PORTB |= (1 << PB2);
- 32c:	c2 9a       	sbi	0x18, 2	; 24
-
-    BuildTransmitFrame(0);
- 32e:	80 e0       	ldi	r24, 0x00	; 0
- 330:	90 e0       	ldi	r25, 0x00	; 0
- 332:	95 de       	rcall	.-726    	; 0x5e <BuildTransmitFrame>
+ 326:	c2 9a       	sbi	0x18, 2	; 24
 
     spiIndex = 0;
- 334:	10 92 7a 00 	sts	0x007A, r1
-     * Preload the first byte before the master starts.
-     *
-     * SPDR is not written anywhere else outside the ISR
-     * after initialization. This prevents write collisions.
-     */
-    SPDR = transmitFrame[0];
- 338:	80 91 7b 00 	lds	r24, 0x007B
- 33c:	8f b9       	out	0x0f, r24	; 15
+ 328:	10 92 7a 00 	sts	0x007A, r1
 
     /*
+     * Prepare the initial outgoing frame.
+     */
+    BuildTransmitFrame(0);
+ 32c:	80 e0       	ldi	r24, 0x00	; 0
+ 32e:	90 e0       	ldi	r25, 0x00	; 0
+ 330:	96 de       	rcall	.-724    	; 0x5e <BuildTransmitFrame>
+
+    /*
+     * Load the first outgoing byte before the first
+     * master transaction.
+     */
+    SPDR = transmitFrame[0];
+ 332:	80 91 7b 00 	lds	r24, 0x007B
+ 336:	8f b9       	out	0x0f, r24	; 15
      * Enable SPI and SPI transfer-complete interrupt.
-     * Slave mode and SPI Mode 0.
+     *
+     * MSTR remains zero: slave mode.
+     * CPOL = 0 and CPHA = 0: SPI Mode 0.
      */
     SPCR =
- 33e:	80 ec       	ldi	r24, 0xC0	; 192
- 340:	8d b9       	out	0x0d, r24	; 13
+ 338:	80 ec       	ldi	r24, 0xC0	; 192
+ 33a:	8d b9       	out	0x0d, r24	; 13
         (1 << SPE) |
         (1 << SPIE);
 
     sei();
- 342:	78 94       	sei
+ 33c:	78 94       	sei
     if (row == 0)
         address = column;
     else
         address = 0x40 + column;
 
     LCD_Command(0x80 | address);
- 344:	80 e8       	ldi	r24, 0x80	; 128
- 346:	dc de       	rcall	.-584    	; 0x100 <LCD_Command>
-    LCD_Init();
-    Keypad_Init();
-    SPI_SlaveInit();
+ 33e:	80 e8       	ldi	r24, 0x80	; 128
+ 340:	df de       	rcall	.-578    	; 0x100 <LCD_Command>
 
+    /*
+     * Fixed LCD labels.
+     */
     LCD_Goto(0, 0);
     LCD_Print("M8 :");
- 348:	80 e6       	ldi	r24, 0x60	; 96
- 34a:	90 e0       	ldi	r25, 0x00	; 0
- 34c:	ca de       	rcall	.-620    	; 0xe2 <LCD_Print>
+ 342:	80 e6       	ldi	r24, 0x60	; 96
+ 344:	90 e0       	ldi	r25, 0x00	; 0
+ 346:	cd de       	rcall	.-614    	; 0xe2 <LCD_Print>
     if (row == 0)
         address = column;
     else
         address = 0x40 + column;
 
     LCD_Command(0x80 | address);
- 34e:	80 ec       	ldi	r24, 0xC0	; 192
- 350:	d7 de       	rcall	.-594    	; 0x100 <LCD_Command>
-
+ 348:	80 ec       	ldi	r24, 0xC0	; 192
+ 34a:	da de       	rcall	.-588    	; 0x100 <LCD_Command>
+     */
     LCD_Goto(0, 0);
     LCD_Print("M8 :");
 
     LCD_Goto(1, 0);
     LCD_Print("M16:");
- 352:	85 e6       	ldi	r24, 0x65	; 101
- 354:	90 e0       	ldi	r25, 0x00	; 0
- 356:	c5 de       	rcall	.-630    	; 0xe2 <LCD_Print>
+ 34c:	85 e6       	ldi	r24, 0x65	; 101
+ 34e:	90 e0       	ldi	r25, 0x00	; 0
+ 350:	c8 de       	rcall	.-624    	; 0xe2 <LCD_Print>
     char key;
 
     uint16_t inputNumber = 0;
     uint16_t receivedNumberCopy = 0;
 
     uint8_t digitCount = 0;
- 358:	f1 2c       	mov	r15, r1
+ 352:	f1 2c       	mov	r15, r1
 
 int main(void)
 {
     char key;
 
     uint16_t inputNumber = 0;
- 35a:	00 e0       	ldi	r16, 0x00	; 0
- 35c:	10 e0       	ldi	r17, 0x00	; 0
-        }
-    }
-    else if (key == '*')
+ 354:	00 e0       	ldi	r16, 0x00	; 0
+ 356:	10 e0       	ldi	r17, 0x00	; 0
     {
+        /*
+         * Clear entered number.
+         */
         *inputNumber = 0;
         *digitCount = 0;
- 35e:	c1 2c       	mov	r12, r1
-            (*digitCount)++;
-        }
-    }
+ 358:	c1 2c       	mov	r12, r1
     else if (key == '*')
     {
+        /*
+         * Clear entered number.
+         */
         *inputNumber = 0;
- 360:	d1 2c       	mov	r13, r1
- 362:	e1 2c       	mov	r14, r1
+ 35a:	d1 2c       	mov	r13, r1
+ 35c:	e1 2c       	mov	r14, r1
 
 static char Keypad_GetKey(void)
 {
     char key;
 
     key = Keypad_ScanRaw();
- 364:	dc de       	rcall	.-584    	; 0x11e <Keypad_ScanRaw>
- 366:	c8 2f       	mov	r28, r24
+ 35e:	df de       	rcall	.-578    	; 0x11e <Keypad_ScanRaw>
+ 360:	c8 2f       	mov	r28, r24
 
     if (key != 0)
- 368:	88 23       	and	r24, r24
- 36a:	09 f4       	brne	.+2      	; 0x36e <main+0xa8>
- 36c:	60 c0       	rjmp	.+192    	; 0x42e <main+0x168>
+ 362:	88 23       	and	r24, r24
+ 364:	09 f4       	brne	.+2      	; 0x368 <main+0xa8>
+ 366:	60 c0       	rjmp	.+192    	; 0x428 <main+0x168>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 36e:	8f e3       	ldi	r24, 0x3F	; 63
- 370:	9c e9       	ldi	r25, 0x9C	; 156
- 372:	01 97       	sbiw	r24, 0x01	; 1
- 374:	f1 f7       	brne	.-4      	; 0x372 <main+0xac>
- 376:	00 c0       	rjmp	.+0      	; 0x378 <main+0xb2>
- 378:	00 00       	nop
+ 368:	8f e3       	ldi	r24, 0x3F	; 63
+ 36a:	9c e9       	ldi	r25, 0x9C	; 156
+ 36c:	01 97       	sbiw	r24, 0x01	; 1
+ 36e:	f1 f7       	brne	.-4      	; 0x36c <main+0xac>
+ 370:	00 c0       	rjmp	.+0      	; 0x372 <main+0xb2>
+ 372:	00 00       	nop
     {
         _delay_ms(20);
 
         if (Keypad_ScanRaw() == key)
- 37a:	d1 de       	rcall	.-606    	; 0x11e <Keypad_ScanRaw>
- 37c:	c8 13       	cpse	r28, r24
- 37e:	57 c0       	rjmp	.+174    	; 0x42e <main+0x168>
- 380:	06 c0       	rjmp	.+12     	; 0x38e <main+0xc8>
- 382:	8f e0       	ldi	r24, 0x0F	; 15
- 384:	97 e2       	ldi	r25, 0x27	; 39
- 386:	01 97       	sbiw	r24, 0x01	; 1
- 388:	f1 f7       	brne	.-4      	; 0x386 <main+0xc0>
- 38a:	00 c0       	rjmp	.+0      	; 0x38c <main+0xc6>
- 38c:	00 00       	nop
+ 374:	d4 de       	rcall	.-600    	; 0x11e <Keypad_ScanRaw>
+ 376:	c8 13       	cpse	r28, r24
+ 378:	57 c0       	rjmp	.+174    	; 0x428 <main+0x168>
+ 37a:	06 c0       	rjmp	.+12     	; 0x388 <main+0xc8>
+ 37c:	8f e0       	ldi	r24, 0x0F	; 15
+ 37e:	97 e2       	ldi	r25, 0x27	; 39
+ 380:	01 97       	sbiw	r24, 0x01	; 1
+ 382:	f1 f7       	brne	.-4      	; 0x380 <main+0xc0>
+ 384:	00 c0       	rjmp	.+0      	; 0x386 <main+0xc6>
+ 386:	00 00       	nop
         {
+            /*
+             * Wait until key is released.
+             */
             while (Keypad_ScanRaw() != 0)
- 38e:	c7 de       	rcall	.-626    	; 0x11e <Keypad_ScanRaw>
- 390:	81 11       	cpse	r24, r1
- 392:	f7 cf       	rjmp	.-18     	; 0x382 <main+0xbc>
- 394:	62 c0       	rjmp	.+196    	; 0x45a <main+0x194>
+ 388:	ca de       	rcall	.-620    	; 0x11e <Keypad_ScanRaw>
+ 38a:	81 11       	cpse	r24, r1
+ 38c:	f7 cf       	rjmp	.-18     	; 0x37c <main+0xbc>
+ 38e:	62 c0       	rjmp	.+196    	; 0x454 <main+0x194>
     uint8_t *digitCount
 )
 {
     if ((key >= '0') && (key <= '9'))
     {
         if (*digitCount < 4)
- 396:	93 e0       	ldi	r25, 0x03	; 3
- 398:	9f 15       	cp	r25, r15
- 39a:	08 f4       	brcc	.+2      	; 0x39e <main+0xd8>
- 39c:	48 c0       	rjmp	.+144    	; 0x42e <main+0x168>
+ 390:	93 e0       	ldi	r25, 0x03	; 3
+ 392:	9f 15       	cp	r25, r15
+ 394:	08 f4       	brcc	.+2      	; 0x398 <main+0xd8>
+ 396:	48 c0       	rjmp	.+144    	; 0x428 <main+0x168>
         {
             *inputNumber =
                 (*inputNumber * 10U) +
- 39e:	98 01       	movw	r18, r16
- 3a0:	22 0f       	add	r18, r18
- 3a2:	33 1f       	adc	r19, r19
- 3a4:	00 0f       	add	r16, r16
- 3a6:	11 1f       	adc	r17, r17
- 3a8:	00 0f       	add	r16, r16
- 3aa:	11 1f       	adc	r17, r17
- 3ac:	00 0f       	add	r16, r16
- 3ae:	11 1f       	adc	r17, r17
- 3b0:	02 0f       	add	r16, r18
- 3b2:	13 1f       	adc	r17, r19
- 3b4:	0c 0f       	add	r16, r28
- 3b6:	11 1d       	adc	r17, r1
- 3b8:	00 53       	subi	r16, 0x30	; 48
- 3ba:	11 09       	sbc	r17, r1
+ 398:	98 01       	movw	r18, r16
+ 39a:	22 0f       	add	r18, r18
+ 39c:	33 1f       	adc	r19, r19
+ 39e:	00 0f       	add	r16, r16
+ 3a0:	11 1f       	adc	r17, r17
+ 3a2:	00 0f       	add	r16, r16
+ 3a4:	11 1f       	adc	r17, r17
+ 3a6:	00 0f       	add	r16, r16
+ 3a8:	11 1f       	adc	r17, r17
+ 3aa:	02 0f       	add	r16, r18
+ 3ac:	13 1f       	adc	r17, r19
+ 3ae:	0c 0f       	add	r16, r28
+ 3b0:	11 1d       	adc	r17, r1
+ 3b2:	00 53       	subi	r16, 0x30	; 48
+ 3b4:	11 09       	sbc	r17, r1
                 (uint16_t)(key - '0');
 
             (*digitCount)++;
- 3bc:	f3 94       	inc	r15
- 3be:	37 c0       	rjmp	.+110    	; 0x42e <main+0x168>
+ 3b6:	f3 94       	inc	r15
+ 3b8:	37 c0       	rjmp	.+110    	; 0x428 <main+0x168>
         }
     }
     else if (key == '*')
- 3c0:	ca 32       	cpi	r28, 0x2A	; 42
- 3c2:	71 f1       	breq	.+92     	; 0x420 <main+0x15a>
-    {
+ 3ba:	ca 32       	cpi	r28, 0x2A	; 42
+ 3bc:	71 f1       	breq	.+92     	; 0x41a <main+0x15a>
+         * Clear entered number.
+         */
         *inputNumber = 0;
         *digitCount = 0;
     }
     else if (key == 'A')
- 3c4:	c1 34       	cpi	r28, 0x41	; 65
- 3c6:	79 f4       	brne	.+30     	; 0x3e6 <main+0x120>
+ 3be:	c1 34       	cpi	r28, 0x41	; 65
+ 3c0:	79 f4       	brne	.+30     	; 0x3e0 <main+0x120>
     {
+        /*
+         * Backspace.
+         */
         *inputNumber /= 10U;
- 3c8:	98 01       	movw	r18, r16
- 3ca:	ad ec       	ldi	r26, 0xCD	; 205
- 3cc:	bc ec       	ldi	r27, 0xCC	; 204
- 3ce:	4b d0       	rcall	.+150    	; 0x466 <__umulhisi3>
- 3d0:	8c 01       	movw	r16, r24
- 3d2:	16 95       	lsr	r17
- 3d4:	07 95       	ror	r16
- 3d6:	16 95       	lsr	r17
- 3d8:	07 95       	ror	r16
- 3da:	16 95       	lsr	r17
- 3dc:	07 95       	ror	r16
+ 3c2:	98 01       	movw	r18, r16
+ 3c4:	ad ec       	ldi	r26, 0xCD	; 205
+ 3c6:	bc ec       	ldi	r27, 0xCC	; 204
+ 3c8:	4b d0       	rcall	.+150    	; 0x460 <__umulhisi3>
+ 3ca:	8c 01       	movw	r16, r24
+ 3cc:	16 95       	lsr	r17
+ 3ce:	07 95       	ror	r16
+ 3d0:	16 95       	lsr	r17
+ 3d2:	07 95       	ror	r16
+ 3d4:	16 95       	lsr	r17
+ 3d6:	07 95       	ror	r16
 
         if (*digitCount > 0)
- 3de:	ff 20       	and	r15, r15
- 3e0:	31 f1       	breq	.+76     	; 0x42e <main+0x168>
+ 3d8:	ff 20       	and	r15, r15
+ 3da:	31 f1       	breq	.+76     	; 0x428 <main+0x168>
             (*digitCount)--;
- 3e2:	fa 94       	dec	r15
- 3e4:	24 c0       	rjmp	.+72     	; 0x42e <main+0x168>
+ 3dc:	fa 94       	dec	r15
+ 3de:	24 c0       	rjmp	.+72     	; 0x428 <main+0x168>
     }
     else if (key == 'B')
- 3e6:	c2 34       	cpi	r28, 0x42	; 66
- 3e8:	39 f4       	brne	.+14     	; 0x3f8 <main+0x132>
+ 3e0:	c2 34       	cpi	r28, 0x42	; 66
+ 3e2:	39 f4       	brne	.+14     	; 0x3f2 <main+0x132>
     {
+        /*
+         * Increment.
+         */
         if (*inputNumber < 9999)
- 3ea:	0f 30       	cpi	r16, 0x0F	; 15
- 3ec:	27 e2       	ldi	r18, 0x27	; 39
- 3ee:	12 07       	cpc	r17, r18
- 3f0:	f0 f4       	brcc	.+60     	; 0x42e <main+0x168>
+ 3e4:	0f 30       	cpi	r16, 0x0F	; 15
+ 3e6:	27 e2       	ldi	r18, 0x27	; 39
+ 3e8:	12 07       	cpc	r17, r18
+ 3ea:	f0 f4       	brcc	.+60     	; 0x428 <main+0x168>
             (*inputNumber)++;
- 3f2:	0f 5f       	subi	r16, 0xFF	; 255
- 3f4:	1f 4f       	sbci	r17, 0xFF	; 255
- 3f6:	1b c0       	rjmp	.+54     	; 0x42e <main+0x168>
+ 3ec:	0f 5f       	subi	r16, 0xFF	; 255
+ 3ee:	1f 4f       	sbci	r17, 0xFF	; 255
+ 3f0:	1b c0       	rjmp	.+54     	; 0x428 <main+0x168>
     }
     else if (key == 'C')
- 3f8:	c3 34       	cpi	r28, 0x43	; 67
- 3fa:	31 f4       	brne	.+12     	; 0x408 <main+0x142>
+ 3f2:	c3 34       	cpi	r28, 0x43	; 67
+ 3f4:	31 f4       	brne	.+12     	; 0x402 <main+0x142>
     {
+        /*
+         * Decrement.
+         */
         if (*inputNumber > 0)
- 3fc:	01 15       	cp	r16, r1
- 3fe:	11 05       	cpc	r17, r1
- 400:	b1 f0       	breq	.+44     	; 0x42e <main+0x168>
+ 3f6:	01 15       	cp	r16, r1
+ 3f8:	11 05       	cpc	r17, r1
+ 3fa:	b1 f0       	breq	.+44     	; 0x428 <main+0x168>
             (*inputNumber)--;
- 402:	01 50       	subi	r16, 0x01	; 1
- 404:	11 09       	sbc	r17, r1
- 406:	13 c0       	rjmp	.+38     	; 0x42e <main+0x168>
+ 3fc:	01 50       	subi	r16, 0x01	; 1
+ 3fe:	11 09       	sbc	r17, r1
+ 400:	13 c0       	rjmp	.+38     	; 0x428 <main+0x168>
     }
     else if (key == 'D')
- 408:	c4 34       	cpi	r28, 0x44	; 68
- 40a:	71 f0       	breq	.+28     	; 0x428 <main+0x162>
-    {
+ 402:	c4 34       	cpi	r28, 0x44	; 68
+ 404:	71 f0       	breq	.+28     	; 0x422 <main+0x162>
+         * Reset to zero.
+         */
         *inputNumber = 0;
         *digitCount = 0;
     }
     else if (key == '#')
- 40c:	c3 32       	cpi	r28, 0x23	; 35
- 40e:	79 f4       	brne	.+30     	; 0x42e <main+0x168>
-         * Confirm the local number.
+ 406:	c3 32       	cpi	r28, 0x23	; 35
+ 408:	79 f4       	brne	.+30     	; 0x428 <main+0x168>
+         * Confirm the number for transmission.
          *
-         * The SPI ISR will include this value in the next
-         * prepared response frame.
+         * confirmedNumber is 16-bit and is also read by
+         * the SPI ISR, so update it atomically.
          */
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
- 410:	8f b7       	in	r24, 0x3f	; 63
+ 40a:	8f b7       	in	r24, 0x3f	; 63
     return 1;
 }
 
 static __inline__ uint8_t __iCliRetVal(void)
 {
     cli();
- 412:	f8 94       	cli
+ 40c:	f8 94       	cli
         {
             confirmedNumber = *inputNumber;
- 414:	10 93 86 00 	sts	0x0086, r17
- 418:	00 93 85 00 	sts	0x0085, r16
+ 40e:	10 93 86 00 	sts	0x0086, r17
+ 412:	00 93 85 00 	sts	0x0085, r16
     (void)__s;
 }
 
 static __inline__ void __iRestore(const  uint8_t *__s)
 {
     SREG = *__s;
- 41c:	8f bf       	out	0x3f, r24	; 63
+ 416:	8f bf       	out	0x3f, r24	; 63
     __asm__ volatile ("" ::: "memory");
- 41e:	07 c0       	rjmp	.+14     	; 0x42e <main+0x168>
-        }
-    }
-    else if (key == '*')
+ 418:	07 c0       	rjmp	.+14     	; 0x428 <main+0x168>
     {
+        /*
+         * Clear entered number.
+         */
         *inputNumber = 0;
         *digitCount = 0;
- 420:	fc 2c       	mov	r15, r12
-            (*digitCount)++;
-        }
-    }
+ 41a:	fc 2c       	mov	r15, r12
     else if (key == '*')
     {
+        /*
+         * Clear entered number.
+         */
         *inputNumber = 0;
- 422:	0d 2d       	mov	r16, r13
- 424:	1e 2d       	mov	r17, r14
- 426:	03 c0       	rjmp	.+6      	; 0x42e <main+0x168>
-            (*inputNumber)--;
-    }
-    else if (key == 'D')
+ 41c:	0d 2d       	mov	r16, r13
+ 41e:	1e 2d       	mov	r17, r14
+ 420:	03 c0       	rjmp	.+6      	; 0x428 <main+0x168>
     {
+        /*
+         * Reset to zero.
+         */
         *inputNumber = 0;
         *digitCount = 0;
- 428:	fc 2c       	mov	r15, r12
-        if (*inputNumber > 0)
-            (*inputNumber)--;
-    }
+ 422:	fc 2c       	mov	r15, r12
     else if (key == 'D')
     {
+        /*
+         * Reset to zero.
+         */
         *inputNumber = 0;
- 42a:	0d 2d       	mov	r16, r13
- 42c:	1e 2d       	mov	r17, r14
-        }
+ 424:	0d 2d       	mov	r16, r13
+ 426:	1e 2d       	mov	r17, r14
 
         /*
-         * Safely copy the 16-bit value updated by the ISR.
+         * numberFromATmega16 is updated inside the ISR.
+         * Copy it atomically because it is 16-bit.
          */
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
- 42e:	8f b7       	in	r24, 0x3f	; 63
+ 428:	8f b7       	in	r24, 0x3f	; 63
     return 1;
 }
 
 static __inline__ uint8_t __iCliRetVal(void)
 {
     cli();
- 430:	f8 94       	cli
+ 42a:	f8 94       	cli
         {
             receivedNumberCopy = numberFromATmega16;
- 432:	c0 91 83 00 	lds	r28, 0x0083
- 436:	d0 91 84 00 	lds	r29, 0x0084
+ 42c:	c0 91 83 00 	lds	r28, 0x0083
+ 430:	d0 91 84 00 	lds	r29, 0x0084
     (void)__s;
 }
 
 static __inline__ void __iRestore(const  uint8_t *__s)
 {
     SREG = *__s;
- 43a:	8f bf       	out	0x3f, r24	; 63
+ 434:	8f bf       	out	0x3f, r24	; 63
     if (row == 0)
         address = column;
     else
         address = 0x40 + column;
 
     LCD_Command(0x80 | address);
- 43c:	85 e8       	ldi	r24, 0x85	; 133
- 43e:	60 de       	rcall	.-832    	; 0x100 <LCD_Command>
-        {
-            receivedNumberCopy = numberFromATmega16;
-        }
+ 436:	85 e8       	ldi	r24, 0x85	; 133
+ 438:	63 de       	rcall	.-826    	; 0x100 <LCD_Command>
 
+        /*
+         * Display the local ATmega8A number.
+         */
         LCD_Goto(0, 5);
         LCD_PrintNumber(inputNumber);
- 440:	c8 01       	movw	r24, r16
- 442:	b0 de       	rcall	.-672    	; 0x1a4 <LCD_PrintNumber>
+ 43a:	c8 01       	movw	r24, r16
+ 43c:	b3 de       	rcall	.-666    	; 0x1a4 <LCD_PrintNumber>
     if (row == 0)
         address = column;
     else
         address = 0x40 + column;
 
     LCD_Command(0x80 | address);
- 444:	85 ec       	ldi	r24, 0xC5	; 197
- 446:	5c de       	rcall	.-840    	; 0x100 <LCD_Command>
+ 43e:	85 ec       	ldi	r24, 0xC5	; 197
+ 440:	5f de       	rcall	.-834    	; 0x100 <LCD_Command>
 
-        LCD_Goto(0, 5);
-        LCD_PrintNumber(inputNumber);
-
+        /*
+         * Display the number received from ATmega16A.
+         */
         LCD_Goto(1, 5);
         LCD_PrintNumber(receivedNumberCopy);
- 448:	ce 01       	movw	r24, r28
- 44a:	ac de       	rcall	.-680    	; 0x1a4 <LCD_PrintNumber>
- 44c:	8f e3       	ldi	r24, 0x3F	; 63
- 44e:	9c e9       	ldi	r25, 0x9C	; 156
- 450:	01 97       	sbiw	r24, 0x01	; 1
- 452:	f1 f7       	brne	.-4      	; 0x450 <main+0x18a>
- 454:	00 c0       	rjmp	.+0      	; 0x456 <main+0x190>
- 456:	00 00       	nop
- 458:	85 cf       	rjmp	.-246    	; 0x364 <main+0x9e>
+ 442:	ce 01       	movw	r24, r28
+ 444:	af de       	rcall	.-674    	; 0x1a4 <LCD_PrintNumber>
+ 446:	8f e3       	ldi	r24, 0x3F	; 63
+ 448:	9c e9       	ldi	r25, 0x9C	; 156
+ 44a:	01 97       	sbiw	r24, 0x01	; 1
+ 44c:	f1 f7       	brne	.-4      	; 0x44a <main+0x18a>
+ 44e:	00 c0       	rjmp	.+0      	; 0x450 <main+0x190>
+ 450:	00 00       	nop
+ 452:	85 cf       	rjmp	.-246    	; 0x35e <main+0x9e>
     char key,
     uint16_t *inputNumber,
     uint8_t *digitCount
 )
 {
     if ((key >= '0') && (key <= '9'))
- 45a:	80 ed       	ldi	r24, 0xD0	; 208
- 45c:	8c 0f       	add	r24, r28
- 45e:	8a 30       	cpi	r24, 0x0A	; 10
- 460:	08 f4       	brcc	.+2      	; 0x464 <__stack+0x5>
- 462:	99 cf       	rjmp	.-206    	; 0x396 <main+0xd0>
- 464:	ad cf       	rjmp	.-166    	; 0x3c0 <main+0xfa>
+ 454:	80 ed       	ldi	r24, 0xD0	; 208
+ 456:	8c 0f       	add	r24, r28
+ 458:	8a 30       	cpi	r24, 0x0A	; 10
+ 45a:	08 f4       	brcc	.+2      	; 0x45e <main+0x19e>
+ 45c:	99 cf       	rjmp	.-206    	; 0x390 <main+0xd0>
+ 45e:	ad cf       	rjmp	.-166    	; 0x3ba <main+0xfa>
 
-00000466 <__umulhisi3>:
- 466:	a2 9f       	mul	r26, r18
- 468:	b0 01       	movw	r22, r0
- 46a:	b3 9f       	mul	r27, r19
- 46c:	c0 01       	movw	r24, r0
- 46e:	a3 9f       	mul	r26, r19
- 470:	01 d0       	rcall	.+2      	; 0x474 <__umulhisi3+0xe>
- 472:	b2 9f       	mul	r27, r18
- 474:	70 0d       	add	r23, r0
- 476:	81 1d       	adc	r24, r1
- 478:	11 24       	eor	r1, r1
- 47a:	91 1d       	adc	r25, r1
- 47c:	08 95       	ret
+00000460 <__umulhisi3>:
+ 460:	a2 9f       	mul	r26, r18
+ 462:	b0 01       	movw	r22, r0
+ 464:	b3 9f       	mul	r27, r19
+ 466:	c0 01       	movw	r24, r0
+ 468:	a3 9f       	mul	r26, r19
+ 46a:	01 d0       	rcall	.+2      	; 0x46e <__umulhisi3+0xe>
+ 46c:	b2 9f       	mul	r27, r18
+ 46e:	70 0d       	add	r23, r0
+ 470:	81 1d       	adc	r24, r1
+ 472:	11 24       	eor	r1, r1
+ 474:	91 1d       	adc	r25, r1
+ 476:	08 95       	ret
 
-0000047e <__itoa_ncheck>:
- 47e:	bb 27       	eor	r27, r27
- 480:	4a 30       	cpi	r20, 0x0A	; 10
- 482:	31 f4       	brne	.+12     	; 0x490 <__itoa_ncheck+0x12>
- 484:	99 23       	and	r25, r25
- 486:	22 f4       	brpl	.+8      	; 0x490 <__itoa_ncheck+0x12>
- 488:	bd e2       	ldi	r27, 0x2D	; 45
- 48a:	90 95       	com	r25
- 48c:	81 95       	neg	r24
- 48e:	9f 4f       	sbci	r25, 0xFF	; 255
- 490:	01 c0       	rjmp	.+2      	; 0x494 <__utoa_common>
+00000478 <__itoa_ncheck>:
+ 478:	bb 27       	eor	r27, r27
+ 47a:	4a 30       	cpi	r20, 0x0A	; 10
+ 47c:	31 f4       	brne	.+12     	; 0x48a <__itoa_ncheck+0x12>
+ 47e:	99 23       	and	r25, r25
+ 480:	22 f4       	brpl	.+8      	; 0x48a <__itoa_ncheck+0x12>
+ 482:	bd e2       	ldi	r27, 0x2D	; 45
+ 484:	90 95       	com	r25
+ 486:	81 95       	neg	r24
+ 488:	9f 4f       	sbci	r25, 0xFF	; 255
+ 48a:	01 c0       	rjmp	.+2      	; 0x48e <__utoa_common>
 
-00000492 <__utoa_ncheck>:
- 492:	bb 27       	eor	r27, r27
+0000048c <__utoa_ncheck>:
+ 48c:	bb 27       	eor	r27, r27
 
-00000494 <__utoa_common>:
- 494:	fb 01       	movw	r30, r22
- 496:	55 27       	eor	r21, r21
- 498:	aa 27       	eor	r26, r26
- 49a:	88 0f       	add	r24, r24
- 49c:	99 1f       	adc	r25, r25
- 49e:	aa 1f       	adc	r26, r26
- 4a0:	a4 17       	cp	r26, r20
- 4a2:	10 f0       	brcs	.+4      	; 0x4a8 <__utoa_common+0x14>
- 4a4:	a4 1b       	sub	r26, r20
- 4a6:	83 95       	inc	r24
- 4a8:	50 51       	subi	r21, 0x10	; 16
- 4aa:	b9 f7       	brne	.-18     	; 0x49a <__utoa_common+0x6>
- 4ac:	a0 5d       	subi	r26, 0xD0	; 208
- 4ae:	aa 33       	cpi	r26, 0x3A	; 58
- 4b0:	08 f0       	brcs	.+2      	; 0x4b4 <__utoa_common+0x20>
- 4b2:	a9 5d       	subi	r26, 0xD9	; 217
- 4b4:	a1 93       	st	Z+, r26
- 4b6:	00 97       	sbiw	r24, 0x00	; 0
- 4b8:	79 f7       	brne	.-34     	; 0x498 <__utoa_common+0x4>
- 4ba:	b1 11       	cpse	r27, r1
- 4bc:	b1 93       	st	Z+, r27
- 4be:	11 92       	st	Z+, r1
- 4c0:	cb 01       	movw	r24, r22
- 4c2:	00 c0       	rjmp	.+0      	; 0x4c4 <strrev>
+0000048e <__utoa_common>:
+ 48e:	fb 01       	movw	r30, r22
+ 490:	55 27       	eor	r21, r21
+ 492:	aa 27       	eor	r26, r26
+ 494:	88 0f       	add	r24, r24
+ 496:	99 1f       	adc	r25, r25
+ 498:	aa 1f       	adc	r26, r26
+ 49a:	a4 17       	cp	r26, r20
+ 49c:	10 f0       	brcs	.+4      	; 0x4a2 <__utoa_common+0x14>
+ 49e:	a4 1b       	sub	r26, r20
+ 4a0:	83 95       	inc	r24
+ 4a2:	50 51       	subi	r21, 0x10	; 16
+ 4a4:	b9 f7       	brne	.-18     	; 0x494 <__utoa_common+0x6>
+ 4a6:	a0 5d       	subi	r26, 0xD0	; 208
+ 4a8:	aa 33       	cpi	r26, 0x3A	; 58
+ 4aa:	08 f0       	brcs	.+2      	; 0x4ae <__utoa_common+0x20>
+ 4ac:	a9 5d       	subi	r26, 0xD9	; 217
+ 4ae:	a1 93       	st	Z+, r26
+ 4b0:	00 97       	sbiw	r24, 0x00	; 0
+ 4b2:	79 f7       	brne	.-34     	; 0x492 <__utoa_common+0x4>
+ 4b4:	b1 11       	cpse	r27, r1
+ 4b6:	b1 93       	st	Z+, r27
+ 4b8:	11 92       	st	Z+, r1
+ 4ba:	cb 01       	movw	r24, r22
+ 4bc:	00 c0       	rjmp	.+0      	; 0x4be <strrev>
 
-000004c4 <strrev>:
- 4c4:	dc 01       	movw	r26, r24
- 4c6:	fc 01       	movw	r30, r24
- 4c8:	67 2f       	mov	r22, r23
- 4ca:	71 91       	ld	r23, Z+
- 4cc:	77 23       	and	r23, r23
- 4ce:	e1 f7       	brne	.-8      	; 0x4c8 <strrev+0x4>
- 4d0:	32 97       	sbiw	r30, 0x02	; 2
- 4d2:	04 c0       	rjmp	.+8      	; 0x4dc <strrev+0x18>
- 4d4:	7c 91       	ld	r23, X
- 4d6:	6d 93       	st	X+, r22
- 4d8:	70 83       	st	Z, r23
- 4da:	62 91       	ld	r22, -Z
- 4dc:	ae 17       	cp	r26, r30
- 4de:	bf 07       	cpc	r27, r31
- 4e0:	c8 f3       	brcs	.-14     	; 0x4d4 <strrev+0x10>
- 4e2:	08 95       	ret
+000004be <strrev>:
+ 4be:	dc 01       	movw	r26, r24
+ 4c0:	fc 01       	movw	r30, r24
+ 4c2:	67 2f       	mov	r22, r23
+ 4c4:	71 91       	ld	r23, Z+
+ 4c6:	77 23       	and	r23, r23
+ 4c8:	e1 f7       	brne	.-8      	; 0x4c2 <strrev+0x4>
+ 4ca:	32 97       	sbiw	r30, 0x02	; 2
+ 4cc:	04 c0       	rjmp	.+8      	; 0x4d6 <strrev+0x18>
+ 4ce:	7c 91       	ld	r23, X
+ 4d0:	6d 93       	st	X+, r22
+ 4d2:	70 83       	st	Z, r23
+ 4d4:	62 91       	ld	r22, -Z
+ 4d6:	ae 17       	cp	r26, r30
+ 4d8:	bf 07       	cpc	r27, r31
+ 4da:	c8 f3       	brcs	.-14     	; 0x4ce <strrev+0x10>
+ 4dc:	08 95       	ret
 
-000004e4 <_exit>:
- 4e4:	f8 94       	cli
+000004de <_exit>:
+ 4de:	f8 94       	cli
 
-000004e6 <__stop_program>:
- 4e6:	ff cf       	rjmp	.-2      	; 0x4e6 <__stop_program>
+000004e0 <__stop_program>:
+ 4e0:	ff cf       	rjmp	.-2      	; 0x4e0 <__stop_program>

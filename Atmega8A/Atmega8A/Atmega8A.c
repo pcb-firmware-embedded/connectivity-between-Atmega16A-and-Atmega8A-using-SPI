@@ -1,8 +1,10 @@
 /*
  * ATmega8A SPI Slave
- * Bidirectional number communication with ATmega16A
- * 4x4 keypad + 16x2 LCD
+ * Bidirectional number exchange with ATmega16A
+ * 4x4 keypad + LCD 16x2
+ *
  * Atmel Studio 6 / AVR-GCC
+ * Clock: 8 MHz
  */
 
 #define F_CPU 8000000UL
@@ -17,13 +19,13 @@
 /* =========================================================
    LCD CONNECTIONS — PORTC
 
-   RS -> PC0
-   EN -> PC1
-   D4 -> PC2
-   D5 -> PC3
-   D6 -> PC4
-   D7 -> PC5
-   RW -> GND
+   LCD RS -> PC0
+   LCD EN -> PC1
+   LCD D4 -> PC2
+   LCD D5 -> PC3
+   LCD D6 -> PC4
+   LCD D7 -> PC5
+   LCD RW -> GND
    ========================================================= */
 
 #define LCD_PORT PORTC
@@ -37,17 +39,17 @@
 #define LCD_D7 PC5
 
 /* =========================================================
-   4x4 KEYPAD — PORTD
+   4x4 KEYPAD CONNECTIONS — PORTD
 
-   R1 -> PD0
-   R2 -> PD1
-   R3 -> PD2
-   R4 -> PD3
+   Row 1 -> PD0
+   Row 2 -> PD1
+   Row 3 -> PD2
+   Row 4 -> PD3
 
-   C1 -> PD4
-   C2 -> PD5
-   C3 -> PD6
-   C4 -> PD7
+   Column 1 -> PD4
+   Column 2 -> PD5
+   Column 3 -> PD6
+   Column 4 -> PD7
    ========================================================= */
 
 #define KEYPAD_PORT PORTD
@@ -55,15 +57,20 @@
 #define KEYPAD_PIN  PIND
 
 /* =========================================================
-   SPI FRAME
+   SPI FRAME FORMAT
+
+   Byte 0: Header 0xA5
+   Byte 1: Number high byte
+   Byte 2: Number low byte
+   Byte 3: XOR checksum
    ========================================================= */
 
 #define FRAME_HEADER 0xA5
 #define FRAME_SIZE   4
 
 /*
- * Number confirmed on ATmega8A.
- * This value is sent to ATmega16A.
+ * Number entered and confirmed on ATmega8A.
+ * This value is transmitted to ATmega16A.
  */
 static volatile uint16_t confirmedNumber = 0;
 
@@ -73,12 +80,12 @@ static volatile uint16_t confirmedNumber = 0;
 static volatile uint16_t numberFromATmega16 = 0;
 
 /*
- * SPI buffers.
+ * SPI frame buffers.
  */
 static volatile uint8_t receiveFrame[FRAME_SIZE];
 static volatile uint8_t transmitFrame[FRAME_SIZE];
 
-static volatile uint8_t receiveIndex = 0;
+static volatile uint8_t spiIndex = 0;
 
 /* =========================================================
    LCD FUNCTIONS
@@ -160,6 +167,9 @@ static void LCD_Init(void)
 
     _delay_ms(40);
 
+    /*
+     * HD44780 4-bit initialization.
+     */
     LCD_SendNibble(0x03);
     _delay_ms(5);
 
@@ -169,10 +179,10 @@ static void LCD_Init(void)
     LCD_SendNibble(0x03);
     LCD_SendNibble(0x02);
 
-    LCD_Command(0x28); /* 4-bit, 2 lines */
-    LCD_Command(0x0C); /* Display ON */
-    LCD_Command(0x06); /* Cursor increment */
-    LCD_Command(0x01); /* Clear LCD */
+    LCD_Command(0x28); /* 4-bit, 2-line display */
+    LCD_Command(0x0C); /* Display ON, cursor OFF */
+    LCD_Command(0x06); /* Cursor moves right */
+    LCD_Command(0x01); /* Clear display */
 }
 
 static void LCD_Goto(uint8_t row, uint8_t column)
@@ -204,7 +214,8 @@ static void LCD_PrintNumber(uint16_t number)
     LCD_Print(buffer);
 
     /*
-     * Clear remaining positions.
+     * Clear unused positions so old digits disappear.
+     * Four LCD positions are used for numbers 0–9999.
      */
     if (number < 1000)
         LCD_Character(' ');
@@ -231,13 +242,14 @@ static const char keypadMap[4][4] =
 static void Keypad_Init(void)
 {
     /*
-     * PD0-PD3: outputs for rows
-     * PD4-PD7: inputs for columns
+     * PD0–PD3: row outputs.
+     * PD4–PD7: column inputs.
      */
     KEYPAD_DDR = 0x0F;
 
     /*
-     * Rows HIGH, column pull-ups enabled
+     * Rows initially HIGH.
+     * Internal pull-ups enabled on columns.
      */
     KEYPAD_PORT = 0xFF;
 }
@@ -255,7 +267,7 @@ static char Keypad_ScanRaw(void)
         KEYPAD_PORT |= 0x0F;
 
         /*
-         * Drive current row LOW.
+         * Drive one selected row LOW.
          */
         KEYPAD_PORT &= ~(1 << row);
 
@@ -286,7 +298,7 @@ static char Keypad_GetKey(void)
         if (Keypad_ScanRaw() == key)
         {
             /*
-             * Wait for release.
+             * Wait until key is released.
              */
             while (Keypad_ScanRaw() != 0)
             {
@@ -301,7 +313,7 @@ static char Keypad_GetKey(void)
 }
 
 /* =========================================================
-   NUMBER PROCESSING
+   NUMBER ENTRY FUNCTIONS
    ========================================================= */
 
 static void ProcessKey(
@@ -323,11 +335,17 @@ static void ProcessKey(
     }
     else if (key == '*')
     {
+        /*
+         * Clear entered number.
+         */
         *inputNumber = 0;
         *digitCount = 0;
     }
     else if (key == 'A')
     {
+        /*
+         * Backspace.
+         */
         *inputNumber /= 10U;
 
         if (*digitCount > 0)
@@ -335,16 +353,25 @@ static void ProcessKey(
     }
     else if (key == 'B')
     {
+        /*
+         * Increment.
+         */
         if (*inputNumber < 9999)
             (*inputNumber)++;
     }
     else if (key == 'C')
     {
+        /*
+         * Decrement.
+         */
         if (*inputNumber > 0)
             (*inputNumber)--;
     }
     else if (key == 'D')
     {
+        /*
+         * Reset to zero.
+         */
         *inputNumber = 0;
         *digitCount = 0;
     }
@@ -352,6 +379,9 @@ static void ProcessKey(
     {
         /*
          * Confirm the number for transmission.
+         *
+         * confirmedNumber is 16-bit and is also read by
+         * the SPI ISR, so update it atomically.
          */
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
         {
@@ -389,9 +419,9 @@ static void BuildTransmitFrame(uint16_t number)
 static void SPI_SlaveInit(void)
 {
     /*
-     * ATmega8A SPI pins:
+     * ATmega8A hardware SPI pins:
      *
-     * PB2 = SS / INT2 input
+     * PB2 = SS input
      * PB3 = MOSI input
      * PB4 = MISO output
      * PB5 = SCK input
@@ -410,97 +440,63 @@ static void SPI_SlaveInit(void)
      */
     PORTB |= (1 << PB2);
 
-    receiveIndex = 0;
+    spiIndex = 0;
 
+    /*
+     * Prepare the initial outgoing frame.
+     */
     BuildTransmitFrame(0);
 
     /*
-     * Preload first outgoing byte.
+     * Load the first outgoing byte before the first
+     * master transaction.
      */
     SPDR = transmitFrame[0];
 
     /*
-     * Enable SPI and SPI interrupt.
-     * Slave mode, Mode 0.
+     * Enable SPI and SPI transfer-complete interrupt.
+     *
+     * MSTR remains zero: slave mode.
+     * CPOL = 0 and CPHA = 0: SPI Mode 0.
      */
     SPCR =
         (1 << SPE) |
         (1 << SPIE);
 
-    /*
-     * Configure INT2 on falling edge.
-     * PB2 is also INT2.
-     */
-    MCUCSR &= ~(1 << ISC2);
-
-    /*
-     * Clear pending INT2 interrupt flag.
-     */
-    GIFR |= (1 << INTF2);
-
-    /*
-     * Enable INT2.
-     */
-    GICR |= (1 << INT2);
-
     sei();
 }
 
-/*
- * Called when ATmega16A pulls SS LOW.
- */
-ISR(INT2_vect)
-{
-    uint16_t localNumberSnapshot;
+/* =========================================================
+   SPI TRANSFER-COMPLETE INTERRUPT
 
-    receiveIndex = 0;
+   The master must always send exactly four bytes while
+   SS remains LOW.
 
-    /*
-     * Copy confirmed number.
-     */
-    localNumberSnapshot = confirmedNumber;
+   The slave:
+   - receives one master byte,
+   - stores it,
+   - loads its next response byte into SPDR.
+   ========================================================= */
 
-    /*
-     * Build the frame for this transaction.
-     */
-    BuildTransmitFrame(localNumberSnapshot);
-
-    /*
-     * Preload first byte before clock starts.
-     */
-    SPDR = transmitFrame[0];
-}
-
-/*
- * Called after every SPI byte transfer.
- */
 ISR(SPI_STC_vect)
 {
     uint8_t receivedByte;
     uint8_t expectedChecksum;
+    uint16_t localNumberCopy;
 
     /*
-     * Read received byte.
+     * Reading SPDR retrieves the byte sent by ATmega16A.
      */
     receivedByte = SPDR;
 
-    if (receiveIndex < FRAME_SIZE)
-    {
-        receiveFrame[receiveIndex] = receivedByte;
-        receiveIndex++;
-    }
+    receiveFrame[spiIndex] = receivedByte;
 
-    /*
-     * More bytes remain.
-     */
-    if (receiveIndex < FRAME_SIZE)
-    {
-        SPDR = transmitFrame[receiveIndex];
-    }
-    else
+    spiIndex++;
+
+    if (spiIndex >= FRAME_SIZE)
     {
         /*
-         * Four-byte frame received.
+         * A complete four-byte frame has been received.
          */
         expectedChecksum = CalculateChecksum(
             receiveFrame[0],
@@ -519,9 +515,29 @@ ISR(SPI_STC_vect)
         }
 
         /*
-         * Do not write SPDR here.
-         * The next INT2 interrupt preloads byte zero.
+         * Prepare the latest confirmed ATmega8A number
+         * for the next complete transaction.
          */
+        localNumberCopy = confirmedNumber;
+        BuildTransmitFrame(localNumberCopy);
+
+        /*
+         * Restart the frame index.
+         */
+        spiIndex = 0;
+
+        /*
+         * Preload the first byte for the next transaction.
+         */
+        SPDR = transmitFrame[0];
+    }
+    else
+    {
+        /*
+         * Preload the next response byte for the current
+         * transaction.
+         */
+        SPDR = transmitFrame[spiIndex];
     }
 }
 
@@ -542,6 +558,9 @@ int main(void)
     Keypad_Init();
     SPI_SlaveInit();
 
+    /*
+     * Fixed LCD labels.
+     */
     LCD_Goto(0, 0);
     LCD_Print("M8 :");
 
@@ -562,22 +581,22 @@ int main(void)
         }
 
         /*
-         * Copy received 16-bit number safely.
+         * numberFromATmega16 is updated inside the ISR.
+         * Copy it atomically because it is 16-bit.
          */
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
         {
-            receivedNumberCopy =
-                numberFromATmega16;
+            receivedNumberCopy = numberFromATmega16;
         }
 
         /*
-         * First line: local ATmega8A input.
+         * Display the local ATmega8A number.
          */
         LCD_Goto(0, 5);
         LCD_PrintNumber(inputNumber);
 
         /*
-         * Second line: number received from ATmega16A.
+         * Display the number received from ATmega16A.
          */
         LCD_Goto(1, 5);
         LCD_PrintNumber(receivedNumberCopy);
