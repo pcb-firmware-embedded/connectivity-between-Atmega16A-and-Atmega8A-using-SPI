@@ -2,6 +2,8 @@
 
 This project demonstrates bidirectional SPI communication between an **ATmega16A** and an **ATmega8A** using AVR-GCC in **Atmel Studio 6**.
 
+Proteus simulation was used to verify the SPI communication, keypad input, LCD display, and bidirectional data exchange between the ATmega16A and ATmega8A before hardware implementation.
+
 The ATmega16A operates as the **SPI master**, while the ATmega8A operates as the **SPI slave**. Each microcontroller has its own:
 
 - 4×4 matrix keypad
